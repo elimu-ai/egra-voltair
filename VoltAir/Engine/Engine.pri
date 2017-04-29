@@ -166,11 +166,9 @@ android {
         $$PWD/android/deploy/res/drawable-ldpi/icon.png \
         $$PWD/android/deploy/res/drawable-xhdpi/logo.png \
         $$PWD/android/deploy/res/values/voltairactivity_strings.xml \
-        $$PWD/android/deploy/res/values/googleplayserviceshelper_strings.xml \
         $$PWD/android/deploy/res/values/ids.xml \
         $$PWD/android/deploy/res/xml/voltair_tracker.xml \
         $$PWD/android/deploy/src/com/google/fpl/voltair/VoltAirActivity.java \
-        $$PWD/android/deploy/src/com/google/fpl/utils/GooglePlayServicesHelper.java \
         $$PWD/android/deploy/src/com/google/fpl/utils/SoundManager.java \
 
     LIBS += \

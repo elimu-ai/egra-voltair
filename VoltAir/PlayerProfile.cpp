@@ -410,39 +410,21 @@ void PlayerProfile::reset(bool permanently) {
 }
 
 bool PlayerProfile::hasCloudSave() const {
-//#ifdef Q_OS_ANDROID
-//    return true;
-//#else
     return false;
-//#endif
 }
 
 bool PlayerProfile::isSignedIntoCloud() const {
-//#ifdef Q_OS_ANDROID
-//    return AndroidActivity::isSignedIntoCloud();
-//#else
     return false;
-//#endif
 }
 
 bool PlayerProfile::cloudSignInFailed() const {
-//#ifdef Q_OS_ANDROID
-//    return AndroidActivity::cloudSignInFailed();
-//#else
     return false;
-//#endif
 }
 
 void PlayerProfile::signIntoCloud() {
-//#ifdef Q_OS_ANDROID
-//    AndroidActivity::signIntoCloud();
-//#endif
 }
 
 void PlayerProfile::signOutOfCloud() {
-//#ifdef Q_OS_ANDROID
-//    AndroidActivity::signOutOfCloud();
-//#endif
 }
 
 QJsonDocument PlayerProfile::toJsonDocument() {
@@ -561,9 +543,6 @@ void PlayerProfile::saveToCloud() {
     // NOTE: Must try to push achievement updates to cloud first as we do not need to write out
     // achievement changes in our cloud state that were already synced to the cloud
     saveAchievementsToCloud();
-//#ifdef Q_OS_ANDROID
-//    AndroidActivity::saveToCloud(QString::fromUtf8(toJsonDocument().toJson()));
-//#endif
 }
 
 void PlayerProfile::saveAchievementsToCloud() {
@@ -602,9 +581,6 @@ QSharedPointer<Achievement>& PlayerProfile::getAchievement(const QString &name) 
 }
 
 void PlayerProfile::clearCloud() {
-//#ifdef Q_OS_ANDROID
-//    AndroidActivity::clearCloudData();
-//#endif
 }
 
 void PlayerProfile::clearLocal() {
