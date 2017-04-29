@@ -228,7 +228,6 @@ void Game::onLevelCompleted() {
     mScoreUpdateTimes.clear();
 
     QString levelCompletedTag = getLevelTrackerTag("LevelCompleted");
-    engine->sendTrackerEvent("Gameplay", levelCompletedTag);
 
     const LevelProgression* levelProgression = getCurrentLevelProgression();
     const LevelInfo* levelInfo = mPlayerProfile.getLastPlayedLevelInfo(
@@ -240,8 +239,6 @@ void Game::onLevelCompleted() {
         int numPlayers = PlayerManager::getInstance()->getAvailablePlayers().size();
         if (numPlayers > 1) {
             unlockAchievement("lots_of_bots");
-        } else {
-            engine->sendTrackerEvent("Gameplay", levelCompletedTag, "NumPlayers", numPlayers);
         }
     }
 
@@ -275,9 +272,6 @@ void Game::onLevelCompleted() {
         if (mPlayerProfile.hasMinStars(levelProgression->getName(), 4)) {
             unlockAchievement(levelProgression->getAchievementToUnlockOnPerfection());
         }
-
-        engine->sendTrackerEvent("Gameplay", levelCompletedTag, "NumOrbs", singlePlayerScore);
-        engine->sendTrackerEvent("Gameplay", levelCompletedTag, "NumStars", starScore);
     }
 
     for (Actor* player : Engine::getInstance()->getLevel()->getActors(Actor::PlayerActor)) {
@@ -416,8 +410,6 @@ void Game::onAfterUpdate() {
 }
 
 void Game::onLevelChanged() {
-    Engine* engine = Engine::getInstance();
-    engine->sendTrackerEvent("Gameplay", getLevelTrackerTag("LevelStarted"));
     mIsPlayingLevel = true;
 }
 
@@ -468,9 +460,6 @@ void Game::abandonCurrentLevel() {
     }
 
     mIsPlayingLevel = false;
-
-    // Send abandoned event.
-    engine->sendTrackerEvent("Gameplay", getLevelTrackerTag("LevelAbandoned"));
 
     // Save the player profile and abandon the current level.
     mPlayerProfile.save();

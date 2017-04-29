@@ -35,15 +35,6 @@ import android.widget.Toast;
 
 import com.google.fpl.voltair.R;
 import com.google.fpl.utils.SoundManager;
-import com.google.android.gms.analytics.GoogleAnalytics;
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
-import com.google.android.gms.appstate.AppStateManager;
-import com.google.android.gms.appstate.AppStateStatusCodes;
-import com.google.android.gms.auth.GoogleAuthUtil;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.games.Games;
-import com.google.android.gms.games.achievement.Achievements;
 
 import java.nio.charset.Charset;
 import java.util.HashSet;
@@ -81,7 +72,6 @@ public class VoltAirActivity extends QtActivity implements InputManager.InputDev
     // Data to save to cloud when connection is established
     private String mBufferedCloudData = null;
     private SoundManager mSoundManager = null;
-    private Tracker mTracker = null;
 
     /**
      * @brief Called when the activity is starting.
@@ -98,8 +88,6 @@ public class VoltAirActivity extends QtActivity implements InputManager.InputDev
         mInputManager = (InputManager) getSystemService(INPUT_SERVICE);
 
         mSoundManager = new SoundManager();
-
-        mTracker = GoogleAnalytics.getInstance(this).newTracker(R.xml.voltair_tracker);
 
         onApplicationCreate();
     }
@@ -167,47 +155,6 @@ public class VoltAirActivity extends QtActivity implements InputManager.InputDev
     public void onDestroy() {
         super.onDestroy();
         onApplicationDestroy();
-    }
-
-    /**
-     * @brief Called when app state data has been loaded successfully.
-     * @param result Result retrieved from @c AppStateManager.StateResult with the loaded data
-     */
-    public void onStateLoaded(AppStateManager.StateLoadedResult result) {
-        int statusCode = result.getStatus().getStatusCode();
-        byte[] localByteData = result.getLocalData();
-        String localData = localByteData != null ? new String(localByteData, UTF_8) : null;
-
-        switch (statusCode) {
-        case AppStateStatusCodes.STATUS_OK:
-            Log.i(LOG_TAG, "Status = OK");
-            // Data was successfully loaded from the cloud: merge with local data.
-            break;
-        case AppStateStatusCodes.STATUS_STATE_KEY_NOT_FOUND:
-            Log.i(LOG_TAG, "Status = STATE KEY NOT FOUND");
-            // Key not found means there is no saved data.
-            break;
-        case AppStateStatusCodes.STATUS_NETWORK_ERROR_NO_DATA:
-            Log.i(LOG_TAG, "Status = NETWORK ERROR NO DATA");
-            // Can't reach cloud, and we have no local state.
-            // TODO: Warn user that they may not see their existing progress, but any new progress
-            // won't be lost.
-            break;
-        case AppStateStatusCodes.STATUS_NETWORK_ERROR_STALE_DATA:
-            Log.i(LOG_TAG, "Status = NETWORK ERROR STALE DATA");
-            // Can't reach cloud, but we have locally cached data.
-            break;
-        case AppStateStatusCodes.STATUS_CLIENT_RECONNECT_REQUIRED:
-            Log.i(LOG_TAG, "Status = CLIENT RECONNECT REQUIRED");
-            break;
-        default:
-            Log.i(LOG_TAG, "Status = ERROR");
-            // TODO: Notify user of error.
-            break;
-        }
-
-        onCloudDataLoaded(statusCode, localData);
-        mSyncing = false;
     }
 
     /**
@@ -337,74 +284,6 @@ public class VoltAirActivity extends QtActivity implements InputManager.InputDev
             Log.e(LOG_TAG, e.getMessage());
             return null;
         }
-    }
-
-    /**
-     * @brief Sets the Google Analytics screen name and optionally sends a screen view hit.
-     * @param screenName Name of screen to be set
-     * @param sendScreenView @c true if a screen view hit should be sent
-     */
-    public void setTrackerScreenName(String screenName, boolean sendScreenView) {
-        mTracker.setScreenName(screenName);
-        if (sendScreenView) {
-            mTracker.send(new HitBuilders.AppViewBuilder().build());
-        }
-    }
-
-    /**
-     * @brief Sends an event hit to Google Analytics.
-     * @param category Category in which the event will be filed
-     * @param action Action associated with the event
-     */
-    public void sendTrackerEvent(String category, String action) {
-        mTracker.send(new HitBuilders.EventBuilder()
-                .setCategory(category)
-                .setAction(action)
-                .build());
-    }
-
-    /**
-     * @brief Sends an event hit to Google Analytics.
-     * @param category Category in which the event will be filed
-     * @param action Action associated with the event
-     * @param label Descriptive label used for further differentiation of categorical actions
-     */
-    public void sendTrackerEvent(String category, String action, String label) {
-        mTracker.send(new HitBuilders.EventBuilder()
-                .setCategory(category)
-                .setAction(action)
-                .setLabel(label)
-                .build());
-    }
-
-    /**
-     * @brief Sends an event hit to Google Analytics.
-     * @param category Category in which the event will be filed
-     * @param action Action associated with the event
-     * @param label Descriptive label used for further differentiation of categorical actions
-     * @param value Value to be logged with the event
-     */
-    public void sendTrackerEvent(String category, String action, String label, long value) {
-        mTracker.send(new HitBuilders.EventBuilder()
-                .setCategory(category)
-                .setAction(action)
-                .setLabel(label)
-                .setValue(value)
-                .build());
-    }
-
-    /**
-     * @brief Sends an event hit to Google Analytics.
-     * @param category Category in which the event will be filed
-     * @param action Action associated with the event
-     * @param value Value to be logged with the event
-     */
-    public void sendTrackerEvent(String category, String action, long value) {
-        mTracker.send(new HitBuilders.EventBuilder()
-                .setCategory(category)
-                .setAction(action)
-                .setValue(value)
-                .build());
     }
 
     /**
