@@ -81,9 +81,6 @@ KeyNavFocusArea {
             }
             state = showState
             showing = true
-            if (objectName) {
-                Engine.setTrackerScreenName(objectName)
-            }
         }
     }
 
