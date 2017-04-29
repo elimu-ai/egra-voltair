@@ -286,7 +286,7 @@ jstring AndroidActivity::onCloudDataConflict(JNIEnv* jni, jobject, jstring javaL
     return jni->NewStringUTF(nativeResolvedData.c_str());
 }
 
-bool AndroidActivity::isSignedIntoCloud() {
+/*bool AndroidActivity::isSignedIntoCloud() {
     auto jni = getEnv();
     if (!jni || !getActivity()) {
         return false;
@@ -294,9 +294,9 @@ bool AndroidActivity::isSignedIntoCloud() {
     jclass activityClass = getActivityClass(jni.getJNIEnv());
     jmethodID isSignedIntoCloudMethod = jni->GetMethodID(activityClass, "isSignedIntoCloud", "()Z");
     return jni->CallBooleanMethod(getActivity(), isSignedIntoCloudMethod);
-}
+}*/
 
-bool AndroidActivity::cloudSignInFailed() {
+/*bool AndroidActivity::cloudSignInFailed() {
     auto jni = getEnv();
     if (!jni || !getActivity()) {
         return false;
@@ -304,9 +304,9 @@ bool AndroidActivity::cloudSignInFailed() {
     jclass activityClass = getActivityClass(jni.getJNIEnv());
     jmethodID cloudSignInFailedMethod = jni->GetMethodID(activityClass, "cloudSignInFailed", "()Z");
     return jni->CallBooleanMethod(getActivity(), cloudSignInFailedMethod);
-}
+}*/
 
-void AndroidActivity::signIntoCloud() {
+/*void AndroidActivity::signIntoCloud() {
     auto jni = getEnv();
     if (!jni || !getActivity()) {
         return;
@@ -314,9 +314,9 @@ void AndroidActivity::signIntoCloud() {
     jclass activityClass = getActivityClass(jni.getJNIEnv());
     jmethodID signIntoCloudMethod = jni->GetMethodID(activityClass, "signIntoCloud", "()V");
     jni->CallVoidMethod(getActivity(), signIntoCloudMethod);
-}
+}*/
 
-void AndroidActivity::signOutOfCloud() {
+/*void AndroidActivity::signOutOfCloud() {
     auto jni = getEnv();
     if (!jni || !getActivity()) {
         return;
@@ -324,9 +324,9 @@ void AndroidActivity::signOutOfCloud() {
     jclass activityClass = getActivityClass(jni.getJNIEnv());
     jmethodID signOutOfCloudMethod = jni->GetMethodID(activityClass, "signOutOfCloud", "()V");
     jni->CallVoidMethod(getActivity(), signOutOfCloudMethod);
-}
+}*/
 
-bool AndroidActivity::ensureCloudSync() {
+/*bool AndroidActivity::ensureCloudSync() {
     auto jni = getEnv();
     if (!jni || !getActivity()) {
         return false;
@@ -334,9 +334,9 @@ bool AndroidActivity::ensureCloudSync() {
     jclass activityClass = getActivityClass(jni.getJNIEnv());
     jmethodID ensureCloudSyncMethod = jni->GetMethodID(activityClass, "ensureCloudSync", "()Z");
     return jni->CallBooleanMethod(getActivity(), ensureCloudSyncMethod);
-}
+}*/
 
-void AndroidActivity::saveToCloud(const QString& data) {
+/*void AndroidActivity::saveToCloud(const QString& data) {
     auto jni = getEnv();
     if (!jni || !getActivity()) {
         return;
@@ -348,9 +348,9 @@ void AndroidActivity::saveToCloud(const QString& data) {
     jstring javaData = jni->NewStringUTF(nativeData.c_str());
     jni->CallVoidMethod(getActivity(), saveCloudDataMethod, javaData);
     jni->DeleteLocalRef(javaData);
-}
+}*/
 
-void AndroidActivity::clearCloudData() {
+/*void AndroidActivity::clearCloudData() {
     auto jni = getEnv();
     if (!jni || !getActivity()) {
         return;
@@ -358,9 +358,9 @@ void AndroidActivity::clearCloudData() {
     jclass activityClass = getActivityClass(jni.getJNIEnv());
     jmethodID clearCloudDataMethod = jni->GetMethodID(activityClass, "clearCloudData", "()V");
     jni->CallVoidMethod(getActivity(), clearCloudDataMethod);
-}
+}*/
 
-bool AndroidActivity::revealAchievement(const QString& name) {
+/*bool AndroidActivity::revealAchievement(const QString& name) {
     auto jni = getEnv();
     if (!jni || !getActivity()) {
         return false;
@@ -373,9 +373,9 @@ bool AndroidActivity::revealAchievement(const QString& name) {
     bool ret = jni->CallBooleanMethod(getActivity(), revealAchievementMethod, javaName);
     jni->DeleteLocalRef(javaName);
     return ret;
-}
+}*/
 
-bool AndroidActivity::unlockAchievement(const QString& name) {
+/*bool AndroidActivity::unlockAchievement(const QString& name) {
     auto jni = getEnv();
     if (!jni || !getActivity()) {
         return false;
@@ -388,9 +388,9 @@ bool AndroidActivity::unlockAchievement(const QString& name) {
     bool ret = jni->CallBooleanMethod(getActivity(), unlockAchievementMethod, javaName);
     jni->DeleteLocalRef(javaName);
     return ret;
-}
+}*/
 
-bool AndroidActivity::incrementAchievement(const QString& name, int numSteps) {
+/*bool AndroidActivity::incrementAchievement(const QString& name, int numSteps) {
     auto jni = getEnv();
     if (!jni || !getActivity()) {
         return false;
@@ -404,9 +404,9 @@ bool AndroidActivity::incrementAchievement(const QString& name, int numSteps) {
             numSteps);
     jni->DeleteLocalRef(javaName);
     return ret;
-}
+}*/
 
-bool AndroidActivity::setAchievementSteps(const QString& name, int minSteps) {
+/*bool AndroidActivity::setAchievementSteps(const QString& name, int minSteps) {
     auto jni = getEnv();
     if (!jni || !getActivity()) {
         return false;
@@ -419,7 +419,7 @@ bool AndroidActivity::setAchievementSteps(const QString& name, int minSteps) {
     bool ret = jni->CallBooleanMethod(getActivity(), setAchievementStepsMethod, javaName, minSteps);
     jni->DeleteLocalRef(javaName);
     return ret;
-}
+}*/
 
 void AndroidActivity::showAchievementsRequested() {
     auto jni = getEnv();

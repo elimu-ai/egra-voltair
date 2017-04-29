@@ -160,35 +160,35 @@ bool Achievement::saveToCloud() {
 }
 
 bool Achievement::cloudUnlock() {
-#ifdef Q_OS_ANDROID
-    return AndroidActivity::unlockAchievement(mName);
-#else
+//#ifdef Q_OS_ANDROID
+//    return AndroidActivity::unlockAchievement(mName);
+//#else
     return true;
-#endif
+//#endif
 }
 
 bool Achievement::cloudReveal() {
-#ifdef Q_OS_ANDROID
-    return AndroidActivity::revealAchievement(mName);
-#else
+//#ifdef Q_OS_ANDROID
+//    return AndroidActivity::revealAchievement(mName);
+//#else
     return true;
-#endif
+//#endif
 }
 
 bool Achievement::cloudIncrement(int numSteps) {
-#ifdef Q_OS_ANDROID
-    return AndroidActivity::incrementAchievement(mName, numSteps);
-#else
+//#ifdef Q_OS_ANDROID
+//   return AndroidActivity::incrementAchievement(mName, numSteps);
+//#else
     Q_UNUSED(numSteps);
     return true;
-#endif
+//#endif
 }
 
 bool Achievement::cloudSetSteps(int numSteps) {
-#ifdef Q_OS_ANDROID
-    return AndroidActivity::setAchievementSteps(mName, numSteps);
-#else
+//#ifdef Q_OS_ANDROID
+//    return AndroidActivity::setAchievementSteps(mName, numSteps);
+//#else
     Q_UNUSED(numSteps);
     return true;
-#endif
+//#endif
 }

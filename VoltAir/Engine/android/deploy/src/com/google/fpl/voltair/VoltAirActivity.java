@@ -68,8 +68,8 @@ import org.qtproject.qt5.android.bindings.QtActivity;
  *   - Exposing Android-specific SoundManager APIs to native code for gapless playback of background
  *     music (BGM)
  */
-public class VoltAirActivity extends QtActivity implements InputManager.InputDeviceListener,
-        GooglePlayServicesHelper.SignInListener {
+public class VoltAirActivity extends QtActivity implements InputManager.InputDeviceListener/*,
+        GooglePlayServicesHelper.SignInListener*/ {
     private static final String LOG_TAG = VoltAirActivity.class.getName();
     private static final String VOLTAIR_PREFS = "VoltAirPreferences";
     // Essentially our offline storage of Play Services Achievements.
@@ -79,7 +79,7 @@ public class VoltAirActivity extends QtActivity implements InputManager.InputDev
     private static final int RC_UNUSED = 5001;
     private static final Charset UTF_8 = Charset.forName("UTF-8");
 
-    private class ResetAchievementsTask extends AsyncTask<Void, Void, Void> {
+    /*private class ResetAchievementsTask extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... params) {
             if (!mPlayServicesHelper.isSignedIn()) {
@@ -105,11 +105,11 @@ public class VoltAirActivity extends QtActivity implements InputManager.InputDev
 
             return null;
         }
-    }
+    }*/
 
     private AudioManager mAudioManager = null;
     private InputManager mInputManager = null;
-    private GooglePlayServicesHelper mPlayServicesHelper = null;
+    //private GooglePlayServicesHelper mPlayServicesHelper = null;
     // Cannot use GooglePlayServicesHelper.hasSignInFailure because things like cancellation
     // are not considered a failure, but it is for us
     private boolean mSignInFailed = false;
@@ -137,10 +137,10 @@ public class VoltAirActivity extends QtActivity implements InputManager.InputDev
 
         mSoundManager = new SoundManager();
 
-        mPlayServicesHelper = new GooglePlayServicesHelper(this,
-                GooglePlayServicesHelper.CLIENT_APPSTATE | GooglePlayServicesHelper.CLIENT_GAMES);
-        mPlayServicesHelper.setMaxForcedSignInAttempts(2);
-        mPlayServicesHelper.setup(this);
+        //mPlayServicesHelper = new GooglePlayServicesHelper(this,
+        //        GooglePlayServicesHelper.CLIENT_APPSTATE | GooglePlayServicesHelper.CLIENT_GAMES);
+        //mPlayServicesHelper.setMaxForcedSignInAttempts(2);
+        //mPlayServicesHelper.setup(this);
 
         mTracker = GoogleAnalytics.getInstance(this).newTracker(R.xml.voltair_tracker);
 
@@ -169,7 +169,7 @@ public class VoltAirActivity extends QtActivity implements InputManager.InputDev
         mSoundManager.onStart(this);
 
         onApplicationStart();
-        mPlayServicesHelper.onStart(this);
+        //mPlayServicesHelper.onStart(this);
     }
 
     /**
@@ -209,7 +209,7 @@ public class VoltAirActivity extends QtActivity implements InputManager.InputDev
         mSoundManager.onStop();
 
         onApplicationStop();
-        mPlayServicesHelper.onStop();
+        //mPlayServicesHelper.onStop();
     }
 
     /**
@@ -229,36 +229,36 @@ public class VoltAirActivity extends QtActivity implements InputManager.InputDev
      */
     @Override
     public void onActivityResult(int requestCode, int responseCode, Intent data) {
-        mPlayServicesHelper.onActivityResult(requestCode, responseCode, data);
+        //mPlayServicesHelper.onActivityResult(requestCode, responseCode, data);
     }
 
     /**
      * @brief Callback for GPGS sign-in failure.
      */
-    @Override
+    /*@Override
     public void onSignInFailed() {
         mSignInFailed = true;
         mSyncing = false;
         onSignedIntoCloudChanged(false);
-    }
+    }*/
 
     /**
      * @brief Callback for GPGS sign-in success.
      */
-    @Override
+    /*@Override
     public void onSignInSucceeded() {
         mSignInFailed = false;
         saveToCloud(mBufferedCloudData);
         // We do not kick off a cloud sync here, but rather try to inform the game we are not
         // signed in and wait for the game to perform a sync if desired.
         onSignedIntoCloudChanged(true);
-    }
+    }*/
 
     /**
      * @brief Called when a conflict is detected while loading app state.
      * @param result Result retrieved from @c AppStateManager.StateResult with the conflicting data
      */
-    public void onStateConflict(AppStateManager.StateConflictResult result) {
+    /*public void onStateConflict(AppStateManager.StateConflictResult result) {
         byte[] localByteData = result.getLocalData();
         String localData = localByteData != null ? new String(localByteData, UTF_8) : null;
         byte[] serverByteData = result.getServerData();
@@ -267,7 +267,7 @@ public class VoltAirActivity extends QtActivity implements InputManager.InputDev
         String resolution = onCloudDataConflict(localData, serverData);
         AppStateManager.resolve(mPlayServicesHelper.getApiClient(), result.getStateKey(),
                 result.getResolvedVersion(), resolution.getBytes(UTF_8));
-    }
+    }*/
 
     /**
      * @brief Called when app state data has been loaded successfully.
@@ -299,7 +299,7 @@ public class VoltAirActivity extends QtActivity implements InputManager.InputDev
             break;
         case AppStateStatusCodes.STATUS_CLIENT_RECONNECT_REQUIRED:
             Log.i(LOG_TAG, "Status = CLIENT RECONNECT REQUIRED");
-            mPlayServicesHelper.reconnect();
+            //mPlayServicesHelper.reconnect();
             break;
         default:
             Log.i(LOG_TAG, "Status = ERROR");
@@ -432,7 +432,8 @@ public class VoltAirActivity extends QtActivity implements InputManager.InputDev
      * @brief Returns @c true if currently signed into the cloud (i.e. GPGS).
      */
     public boolean isSignedIntoCloud() {
-        return mPlayServicesHelper.isSignedIn();
+        //*return mPlayServicesHelper.isSignedIn();
+        return true;
     }
 
     /**
@@ -445,24 +446,24 @@ public class VoltAirActivity extends QtActivity implements InputManager.InputDev
     /**
      * @brief Begins asynchronous GPGS sign-in.
      */
-    public void signIntoCloud() {
+    /*public void signIntoCloud() {
         mSignInFailed = false;
         mPlayServicesHelper.beginUserInitiatedSignIn();
-    }
+    }*/
 
     /**
      * @brief Signs out of GPGS.
      */
-    public void signOutOfCloud() {
+    /*public void signOutOfCloud() {
         mPlayServicesHelper.signOut();
-    }
+    }*/
 
     /**
      * @brief Starts a GPGS @c AppStateManager save game data sync.
      * @note Must be signed into cloud to have this method return anything other than @c false.
      * @returns @c true if a cloud sync has been started successfully
      */
-    public boolean ensureCloudSync() {
+    /*public boolean ensureCloudSync() {
         // If we are not currently signed in or connecting, and there was either a sign-in
         // failure or we didn't force sign-in, then we cannot kick off a cloud sync, nor can we
         // ensure one will be kicked off in the future.
@@ -490,13 +491,13 @@ public class VoltAirActivity extends QtActivity implements InputManager.InputDev
         }
 
         return true;
-    }
+    }*/
 
     /**
      * @brief Saves @p data to the GPGS @c AppStateManager.
      * @param data String encoded save game data to save
      */
-    public void saveToCloud(String data) {
+    /*public void saveToCloud(String data) {
         if (data == null) {
             return;
         }
@@ -508,12 +509,12 @@ public class VoltAirActivity extends QtActivity implements InputManager.InputDev
         } else {
             mBufferedCloudData = data;
         }
-    }
+    }*/
 
     /**
      * @brief Resets @c AppStateManager save game data.
      */
-    public void clearCloudData() {
+    /*public void clearCloudData() {
         if (!mPlayServicesHelper.isSignedIn()) {
             // TODO: Notify user cloud state will not have been cleared
             return;
@@ -521,7 +522,7 @@ public class VoltAirActivity extends QtActivity implements InputManager.InputDev
 
         // NOTE: This API is not version safe
         AppStateManager.delete(mPlayServicesHelper.getApiClient(), 0);
-    }
+    }*/
 
     /**
      * @brief Reveals a GPGS achievement.
@@ -532,7 +533,7 @@ public class VoltAirActivity extends QtActivity implements InputManager.InputDev
      * @param name Android resource name used to locate the achievement id
      * @returns @c true if the achievement was successfully revealed
      */
-    public boolean revealAchievement(final String name) {
+    /*public boolean revealAchievement(final String name) {
         String achievementId = getAchievementId(name);
 
         if (!mPlayServicesHelper.isSignedIn()) {
@@ -549,7 +550,7 @@ public class VoltAirActivity extends QtActivity implements InputManager.InputDev
 
         Games.Achievements.reveal(mPlayServicesHelper.getApiClient(), achievementId);
         return true;
-    }
+    }*/
 
     /**
      * @brief Unlocks a GPGS achievement.
@@ -559,7 +560,7 @@ public class VoltAirActivity extends QtActivity implements InputManager.InputDev
      * @param name Android resource name used to locate the achievement id
      * @returns @c true if the achievement was successfully unlocked
      */
-    public boolean unlockAchievement(final String name) {
+    /*public boolean unlockAchievement(final String name) {
         String achievementId = getAchievementId(name);
 
         if (!mPlayServicesHelper.isSignedIn()) {
@@ -576,7 +577,7 @@ public class VoltAirActivity extends QtActivity implements InputManager.InputDev
 
         Games.Achievements.unlock(mPlayServicesHelper.getApiClient(), achievementId);
         return true;
-    }
+    }*/
 
     /**
      * @brief Increments a GPGS incremental achievement.
@@ -586,7 +587,7 @@ public class VoltAirActivity extends QtActivity implements InputManager.InputDev
      * @param numSteps Number of steps to increment the achievement
      * @returns @c true if the achievement was successfully incremented
      */
-    public boolean incrementAchievement(String name, int numSteps) {
+    /*public boolean incrementAchievement(String name, int numSteps) {
         if (!mPlayServicesHelper.isSignedIn()) {
             // TODO: Figure out if there an offline way of determining if the achievement has
             // successfully been unlocked.
@@ -595,7 +596,7 @@ public class VoltAirActivity extends QtActivity implements InputManager.InputDev
         Games.Achievements.increment(mPlayServicesHelper.getApiClient(), getAchievementId(name),
                 numSteps);
         return true;
-    }
+    }*/
 
     /**
      * @brief Sets a GPGS incremental achievement to have a minimum number of steps.
@@ -605,7 +606,7 @@ public class VoltAirActivity extends QtActivity implements InputManager.InputDev
      * @param minSteps Lower bound for incremental progress
      * @returns @c true if the achievement was successfully set to @p minSteps
      */
-    public boolean setAchievementSteps(String name, int minSteps) {
+    /*public boolean setAchievementSteps(String name, int minSteps) {
         if (!mPlayServicesHelper.isSignedIn()) {
             // TODO: Figure out if there an offline way of determining if the achievement has
             // successfully been unlocked.
@@ -614,25 +615,25 @@ public class VoltAirActivity extends QtActivity implements InputManager.InputDev
         Games.Achievements.setSteps(mPlayServicesHelper.getApiClient(), getAchievementId(name),
                 minSteps);
         return true;
-    }
+    }*/
 
     /**
      * @brief Launch an @c Intent to show the GPGS achievements activity screen.
      */
-    public void showAchievementsRequested() {
+    /*public void showAchievementsRequested() {
         if (!mPlayServicesHelper.isSignedIn()) {
             return;
         }
         startActivityForResult(Games.Achievements.getAchievementsIntent(
                 mPlayServicesHelper.getApiClient()), RC_UNUSED);
-    }
+    }*/
 
     /**
      * @brief Resets all GPGS achievement progress for the currently signed in user account.
      * @note This function is for debug / testing purposes only and will not work on GPGS accounts
      * no longer in staging.
      */
-    public void resetAchievementsRequested() {
+    /*public void resetAchievementsRequested() {
         mRevealedAchievements.clear();
         mUnlockedAchievements.clear();
         saveBufferedAchievements();
@@ -641,7 +642,7 @@ public class VoltAirActivity extends QtActivity implements InputManager.InputDev
             // time some steps are taken it will start from 0 and the Ui will look ok.
             new ResetAchievementsTask().execute((Void) null);
         }
-    }
+    }*/
 
     /**
      * @brief Returns the version string of the Android application.
