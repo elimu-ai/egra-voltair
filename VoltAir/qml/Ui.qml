@@ -344,7 +344,6 @@ UiInternal {
         }
 
         onShowAchievementsRequested: {
-            Engine.sendTrackerEvent("Ui", "ButtonPressed", "ShowAchievements")
             root.showAchievementsRequested()
         }
 
@@ -383,7 +382,6 @@ UiInternal {
         }
 
         onShowAchievementsRequested: {
-            Engine.sendTrackerEvent("Ui", "ButtonPressed", "ShowAchievements")
             root.showAchievementsRequested()
         }
 
@@ -516,7 +514,6 @@ UiInternal {
         }
 
         onShowAchievementsRequested: {
-            Engine.sendTrackerEvent("Ui", "ButtonPressed", "ShowAchievements")
             root.showAchievementsRequested()
         }
 
@@ -552,7 +549,6 @@ UiInternal {
         }
 
         onShowAchievementsRequested: {
-            Engine.sendTrackerEvent("Ui", "ButtonPressed", "ShowAchievements")
             root.showAchievementsRequested()
         }
 

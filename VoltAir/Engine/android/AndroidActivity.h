@@ -199,60 +199,60 @@ public:
     /**
      * @brief Returns @c true if currently signed into the cloud (i.e. GPGS).
      */
-    static bool isSignedIntoCloud();
+    //static bool isSignedIntoCloud();
     /**
      * @brief Returns @c true if the most recent cloud (i.e. GPGS) sign in attempt failed.
      */
-    static bool cloudSignInFailed();
+    //static bool cloudSignInFailed();
     /**
      * @brief Begins asynchronous cloud (i.e. GPGS) sign in.
      */
-    static void signIntoCloud();
+    //static void signIntoCloud();
     /**
      * @brief Signs out of cloud (i.e. GPGS).
      */
-    static void signOutOfCloud();
+    //static void signOutOfCloud();
     /**
      * @brief Starts a cloud (i.e. GPGS) save game data sync.
      * @note Must be signed into cloud to have this method return anything other than @c false.
      * @returns @c true if a cloud sync has been started successfully
      */
-    static bool ensureCloudSync();
+    //static bool ensureCloudSync();
     /**
      * @brief Saves %p data to the cloud (i.e. GPGS).
      * @param data UTF-8 encoded save game data to save
      */
-    static void saveToCloud(const QString& data);
+    //static void saveToCloud(const QString& data);
     /**
      * @brief Resets any cloud (i.e. GPGS) save game data.
      */
-    static void clearCloudData();
+    //static void clearCloudData();
     /**
      * @brief Reveals a GPGS achievement.
      * @param name Android resource name used to locate the achievement id
      * @returns @c true if the achievement was successfully revealed
      */
-    static bool revealAchievement(const QString& name);
+    //static bool revealAchievement(const QString& name);
     /**
      * @brief Unlocks a GPGS achievement.
      * @param name Android resource name used to locate the achievement id
      * @returns @c true if the achievement was successfully unlocked
      */
-    static bool unlockAchievement(const QString& name);
+    //static bool unlockAchievement(const QString& name);
     /**
      * @brief Increments a GPGS incremental achievement.
      * @param name Android resource name used to locate the achievement id
      * @param numSteps Number of steps to increment the achievement
      * @returns @c true if the achievement was successfully incremented
      */
-    static bool incrementAchievement(const QString& name, int numSteps);
+    //static bool incrementAchievement(const QString& name, int numSteps);
     /**
      * @brief Sets a GPGS incremental achievement to have a minimum number of steps.
      * @param name Android resource name used to locate the achievement id
      * @param minSteps Lower bound for incremental progress
      * @returns @c true if the achievement was successfully set to @p minSteps
      */
-    static bool setAchievementSteps(const QString& name, int minSteps);
+    //static bool setAchievementSteps(const QString& name, int minSteps);
     /**
      * @brief Launch an intent to show the GPGS achievements activity screen.
      */
@@ -306,42 +306,6 @@ public:
      * @param value @c true if pausing BGM
      */
     static void setBGMPaused(bool value);
-    /**
-     * @brief Sets the Google Analytics screen name and optionally sends a screen view hit.
-     * @param screenName Name of screen to be set
-     * @param sendScreenView @c true if a screen view hit should be sent
-     */
-    static void setTrackerScreenName(const QString& screenName, bool sendScreenView = true);
-    /**
-     * @brief Sends an event hit to Google Analytics.
-     * @param category Category in which the event will be filed
-     * @param action Action associated with the event
-     */
-    static void sendTrackerEvent(const QString& category, const QString& action);
-    /**
-     * @brief Sends an event hit to Google Analytics.
-     * @param category Category in which the event will be filed
-     * @param action Action associated with the event
-     * @param label Descriptive label used for further differentiation of categorical actions
-     */
-    static void sendTrackerEvent(const QString& category, const QString& action,
-            const QString& label);
-    /**
-     * @brief Sends an event hit to Google Analytics.
-     * @param category Category in which the event will be filed
-     * @param action Action associated with the event
-     * @param label Descriptive label used for further differentiation of categorical actions
-     * @param value Value to be logged with the event
-     */
-    static void sendTrackerEvent(const QString& category, const QString& action,
-            const QString& label, long value);
-    /**
-     * @brief Sends an event hit to Google Analytics.
-     * @param category Category in which the event will be filed
-     * @param action Action associated with the event
-     * @param value Value to be logged with the event
-     */
-    static void sendTrackerEvent(const QString& category, const QString& action, long value);
 
 private:
     static bool onKeyEvent(JNIEnv* jni, jobject keyEvent, ControllerEvent* controllerEvent);

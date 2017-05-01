@@ -34,17 +34,7 @@ import android.view.MotionEvent;
 import android.widget.Toast;
 
 import com.google.fpl.voltair.R;
-import com.google.fpl.utils.GooglePlayServicesHelper;
 import com.google.fpl.utils.SoundManager;
-import com.google.android.gms.analytics.GoogleAnalytics;
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
-import com.google.android.gms.appstate.AppStateManager;
-import com.google.android.gms.appstate.AppStateStatusCodes;
-import com.google.android.gms.auth.GoogleAuthUtil;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.games.Games;
-import com.google.android.gms.games.achievement.Achievements;
 
 import java.nio.charset.Charset;
 import java.util.HashSet;
@@ -68,58 +58,20 @@ import org.qtproject.qt5.android.bindings.QtActivity;
  *   - Exposing Android-specific SoundManager APIs to native code for gapless playback of background
  *     music (BGM)
  */
-public class VoltAirActivity extends QtActivity implements InputManager.InputDeviceListener,
-        GooglePlayServicesHelper.SignInListener {
+public class VoltAirActivity extends QtActivity implements InputManager.InputDeviceListener {
     private static final String LOG_TAG = VoltAirActivity.class.getName();
     private static final String VOLTAIR_PREFS = "VoltAirPreferences";
-    // Essentially our offline storage of Play Services Achievements.
-    private static final String REVEALED_ACHIEVEMENTS = "RevealedAchievements";
-    private static final String UNLOCKED_ACHIEVEMENTS = "UnlockedAchievements";
     // Request code when invoking Activities whose result we don't care about.
     private static final int RC_UNUSED = 5001;
     private static final Charset UTF_8 = Charset.forName("UTF-8");
 
-    private class ResetAchievementsTask extends AsyncTask<Void, Void, Void> {
-        @Override
-        protected Void doInBackground(Void... params) {
-            if (!mPlayServicesHelper.isSignedIn()) {
-                return null;
-            }
-
-            try {
-                String accessToken = GoogleAuthUtil.getToken(VoltAirActivity.this,
-                        Games.getCurrentAccountName(mPlayServicesHelper.getApiClient()),
-                        "oauth2:https://www.googleapis.com/auth/games");
-
-                HttpClient client = new DefaultHttpClient();
-
-                // Reset all achievements, documented at:
-                // https://developers.google.com/games/services/management/api/achievements/resetAll
-                HttpPost post = new HttpPost(String.format("%s?access_token=%s",
-                        "https://www.googleapis.com/games/v1management/achievements/reset",
-                        accessToken));
-                client.execute(post);
-            } catch (Exception ex) {
-                Log.e(LOG_TAG, "Failed to reset achievements.", ex);
-            }
-
-            return null;
-        }
-    }
-
     private AudioManager mAudioManager = null;
     private InputManager mInputManager = null;
-    private GooglePlayServicesHelper mPlayServicesHelper = null;
-    // Cannot use GooglePlayServicesHelper.hasSignInFailure because things like cancellation
-    // are not considered a failure, but it is for us
     private boolean mSignInFailed = false;
     private boolean mSyncing = false;
     // Data to save to cloud when connection is established
     private String mBufferedCloudData = null;
-    private HashSet<String> mRevealedAchievements = null;
-    private HashSet<String> mUnlockedAchievements = null;
     private SoundManager mSoundManager = null;
-    private Tracker mTracker = null;
 
     /**
      * @brief Called when the activity is starting.
@@ -136,13 +88,6 @@ public class VoltAirActivity extends QtActivity implements InputManager.InputDev
         mInputManager = (InputManager) getSystemService(INPUT_SERVICE);
 
         mSoundManager = new SoundManager();
-
-        mPlayServicesHelper = new GooglePlayServicesHelper(this,
-                GooglePlayServicesHelper.CLIENT_APPSTATE | GooglePlayServicesHelper.CLIENT_GAMES);
-        mPlayServicesHelper.setMaxForcedSignInAttempts(2);
-        mPlayServicesHelper.setup(this);
-
-        mTracker = GoogleAnalytics.getInstance(this).newTracker(R.xml.voltair_tracker);
 
         onApplicationCreate();
     }
@@ -161,15 +106,10 @@ public class VoltAirActivity extends QtActivity implements InputManager.InputDev
 
         // Restore preferences.
         SharedPreferences settings = getSharedPreferences(VOLTAIR_PREFS, Context.MODE_PRIVATE);
-        mRevealedAchievements = new HashSet<String>(settings.getStringSet(REVEALED_ACHIEVEMENTS,
-                new HashSet<String>()));
-        mUnlockedAchievements = new HashSet<String>(settings.getStringSet(UNLOCKED_ACHIEVEMENTS,
-                new HashSet<String>()));
 
         mSoundManager.onStart(this);
 
         onApplicationStart();
-        mPlayServicesHelper.onStart(this);
     }
 
     /**
@@ -203,13 +143,9 @@ public class VoltAirActivity extends QtActivity implements InputManager.InputDev
         // Save preferences.
         saveBufferedAchievements();
 
-        mRevealedAchievements = null;
-        mUnlockedAchievements = null;
-
         mSoundManager.onStop();
 
         onApplicationStop();
-        mPlayServicesHelper.onStop();
     }
 
     /**
@@ -219,96 +155,6 @@ public class VoltAirActivity extends QtActivity implements InputManager.InputDev
     public void onDestroy() {
         super.onDestroy();
         onApplicationDestroy();
-    }
-
-    /**
-     * @brief Called when an activity launched by this activity exits.
-     * @param requestCode Identifier supplied when the activity was originally launched
-     * @param responseCode Status returned by the activity
-     * @param data Intent which can be used to return result data to the caller
-     */
-    @Override
-    public void onActivityResult(int requestCode, int responseCode, Intent data) {
-        mPlayServicesHelper.onActivityResult(requestCode, responseCode, data);
-    }
-
-    /**
-     * @brief Callback for GPGS sign-in failure.
-     */
-    @Override
-    public void onSignInFailed() {
-        mSignInFailed = true;
-        mSyncing = false;
-        onSignedIntoCloudChanged(false);
-    }
-
-    /**
-     * @brief Callback for GPGS sign-in success.
-     */
-    @Override
-    public void onSignInSucceeded() {
-        mSignInFailed = false;
-        saveToCloud(mBufferedCloudData);
-        // We do not kick off a cloud sync here, but rather try to inform the game we are not
-        // signed in and wait for the game to perform a sync if desired.
-        onSignedIntoCloudChanged(true);
-    }
-
-    /**
-     * @brief Called when a conflict is detected while loading app state.
-     * @param result Result retrieved from @c AppStateManager.StateResult with the conflicting data
-     */
-    public void onStateConflict(AppStateManager.StateConflictResult result) {
-        byte[] localByteData = result.getLocalData();
-        String localData = localByteData != null ? new String(localByteData, UTF_8) : null;
-        byte[] serverByteData = result.getServerData();
-        String serverData = serverByteData != null ? new String(serverByteData, UTF_8) : null;
-
-        String resolution = onCloudDataConflict(localData, serverData);
-        AppStateManager.resolve(mPlayServicesHelper.getApiClient(), result.getStateKey(),
-                result.getResolvedVersion(), resolution.getBytes(UTF_8));
-    }
-
-    /**
-     * @brief Called when app state data has been loaded successfully.
-     * @param result Result retrieved from @c AppStateManager.StateResult with the loaded data
-     */
-    public void onStateLoaded(AppStateManager.StateLoadedResult result) {
-        int statusCode = result.getStatus().getStatusCode();
-        byte[] localByteData = result.getLocalData();
-        String localData = localByteData != null ? new String(localByteData, UTF_8) : null;
-
-        switch (statusCode) {
-        case AppStateStatusCodes.STATUS_OK:
-            Log.i(LOG_TAG, "Status = OK");
-            // Data was successfully loaded from the cloud: merge with local data.
-            break;
-        case AppStateStatusCodes.STATUS_STATE_KEY_NOT_FOUND:
-            Log.i(LOG_TAG, "Status = STATE KEY NOT FOUND");
-            // Key not found means there is no saved data.
-            break;
-        case AppStateStatusCodes.STATUS_NETWORK_ERROR_NO_DATA:
-            Log.i(LOG_TAG, "Status = NETWORK ERROR NO DATA");
-            // Can't reach cloud, and we have no local state.
-            // TODO: Warn user that they may not see their existing progress, but any new progress
-            // won't be lost.
-            break;
-        case AppStateStatusCodes.STATUS_NETWORK_ERROR_STALE_DATA:
-            Log.i(LOG_TAG, "Status = NETWORK ERROR STALE DATA");
-            // Can't reach cloud, but we have locally cached data.
-            break;
-        case AppStateStatusCodes.STATUS_CLIENT_RECONNECT_REQUIRED:
-            Log.i(LOG_TAG, "Status = CLIENT RECONNECT REQUIRED");
-            mPlayServicesHelper.reconnect();
-            break;
-        default:
-            Log.i(LOG_TAG, "Status = ERROR");
-            // TODO: Notify user of error.
-            break;
-        }
-
-        onCloudDataLoaded(statusCode, localData);
-        mSyncing = false;
     }
 
     /**
@@ -429,221 +275,6 @@ public class VoltAirActivity extends QtActivity implements InputManager.InputDev
     }
 
     /**
-     * @brief Returns @c true if currently signed into the cloud (i.e. GPGS).
-     */
-    public boolean isSignedIntoCloud() {
-        return mPlayServicesHelper.isSignedIn();
-    }
-
-    /**
-     * @brief Returns @c true if the most recent cloud (i.e. GPGS) sign-in attempt failed.
-     */
-    public boolean cloudSignInFailed() {
-        return mSignInFailed;
-    }
-
-    /**
-     * @brief Begins asynchronous GPGS sign-in.
-     */
-    public void signIntoCloud() {
-        mSignInFailed = false;
-        mPlayServicesHelper.beginUserInitiatedSignIn();
-    }
-
-    /**
-     * @brief Signs out of GPGS.
-     */
-    public void signOutOfCloud() {
-        mPlayServicesHelper.signOut();
-    }
-
-    /**
-     * @brief Starts a GPGS @c AppStateManager save game data sync.
-     * @note Must be signed into cloud to have this method return anything other than @c false.
-     * @returns @c true if a cloud sync has been started successfully
-     */
-    public boolean ensureCloudSync() {
-        // If we are not currently signed in or connecting, and there was either a sign-in
-        // failure or we didn't force sign-in, then we cannot kick off a cloud sync, nor can we
-        // ensure one will be kicked off in the future.
-        if (!mPlayServicesHelper.isSignedIn() && !mPlayServicesHelper.isConnecting()
-                && (mSignInFailed || !mPlayServicesHelper.willForceSignInFlow())) {
-            return false;
-        }
-
-        // TODO: Check timeout
-        if (mPlayServicesHelper.isSignedIn() && !mSyncing) {
-            mSyncing = true;
-            AppStateManager.load(mPlayServicesHelper.getApiClient(), 0).setResultCallback(
-                    new ResultCallback<AppStateManager.StateResult>() {
-                @Override
-                public void onResult(AppStateManager.StateResult result) {
-                    AppStateManager.StateConflictResult conflictResult = result.getConflictResult();
-                    AppStateManager.StateLoadedResult loadedResult = result.getLoadedResult();
-                    if (loadedResult != null) {
-                        onStateLoaded(loadedResult);
-                    } else if (conflictResult != null) {
-                        onStateConflict(conflictResult);
-                    }
-                }
-            });
-        }
-
-        return true;
-    }
-
-    /**
-     * @brief Saves @p data to the GPGS @c AppStateManager.
-     * @param data String encoded save game data to save
-     */
-    public void saveToCloud(String data) {
-        if (data == null) {
-            return;
-        }
-
-        if (mPlayServicesHelper.isSignedIn()) {
-            Log.i(LOG_TAG, "Saving state: " + data);
-            AppStateManager.update(mPlayServicesHelper.getApiClient(), 0, data.getBytes(UTF_8));
-            mBufferedCloudData = null;
-        } else {
-            mBufferedCloudData = data;
-        }
-    }
-
-    /**
-     * @brief Resets @c AppStateManager save game data.
-     */
-    public void clearCloudData() {
-        if (!mPlayServicesHelper.isSignedIn()) {
-            // TODO: Notify user cloud state will not have been cleared
-            return;
-        }
-
-        // NOTE: This API is not version safe
-        AppStateManager.delete(mPlayServicesHelper.getApiClient(), 0);
-    }
-
-    /**
-     * @brief Reveals a GPGS achievement.
-     *
-     * If currently offline, this method will reveal the achievement with an Android @c Toast
-     * instead of the GPGS' achievement notification.
-     * @note It is currently the responsibility of the caller to buffer failed reveals.
-     * @param name Android resource name used to locate the achievement id
-     * @returns @c true if the achievement was successfully revealed
-     */
-    public boolean revealAchievement(final String name) {
-        String achievementId = getAchievementId(name);
-
-        if (!mPlayServicesHelper.isSignedIn()) {
-            // Pop a notification to the player to confirm that they did reveal the achievement
-            // since the Google Play Games Services graphic will not appear, but only do this the
-            // first time the achievement has been revealed locally.
-            if (mRevealedAchievements == null || mRevealedAchievements.contains(achievementId)) {
-                return false;
-            }
-            showAchievementToast(getString(R.string.achievement_revealed), name);
-            mRevealedAchievements.add(achievementId);
-            return false;
-        }
-
-        Games.Achievements.reveal(mPlayServicesHelper.getApiClient(), achievementId);
-        return true;
-    }
-
-    /**
-     * @brief Unlocks a GPGS achievement.
-     *
-     * If currently offline, this method will unlock the achievement with an Android @c Toast
-     * instead of the GPGS' achievement notification.
-     * @param name Android resource name used to locate the achievement id
-     * @returns @c true if the achievement was successfully unlocked
-     */
-    public boolean unlockAchievement(final String name) {
-        String achievementId = getAchievementId(name);
-
-        if (!mPlayServicesHelper.isSignedIn()) {
-            // Pop a notification to the player to confirm that they did unlock the achievement
-            // since the Google Play Games Services graphic will not appear, but only do this the
-            // first time the achievement has been revealed locally.
-            if (mUnlockedAchievements == null || mUnlockedAchievements.contains(achievementId)) {
-                return false;
-            }
-            showAchievementToast(getString(R.string.achievement_unlocked), name);
-            mUnlockedAchievements.add(achievementId);
-            return false;
-        }
-
-        Games.Achievements.unlock(mPlayServicesHelper.getApiClient(), achievementId);
-        return true;
-    }
-
-    /**
-     * @brief Increments a GPGS incremental achievement.
-     *
-     * @note It is currently the responsibility of the caller to buffer failed increments.
-     * @param name Android resource name used to locate the achievement id
-     * @param numSteps Number of steps to increment the achievement
-     * @returns @c true if the achievement was successfully incremented
-     */
-    public boolean incrementAchievement(String name, int numSteps) {
-        if (!mPlayServicesHelper.isSignedIn()) {
-            // TODO: Figure out if there an offline way of determining if the achievement has
-            // successfully been unlocked.
-            return false;
-        }
-        Games.Achievements.increment(mPlayServicesHelper.getApiClient(), getAchievementId(name),
-                numSteps);
-        return true;
-    }
-
-    /**
-     * @brief Sets a GPGS incremental achievement to have a minimum number of steps.
-     *
-     * @note It is currently the responsibility of the caller to buffer failed sets.
-     * @param name Android resource name used to locate the achievement id
-     * @param minSteps Lower bound for incremental progress
-     * @returns @c true if the achievement was successfully set to @p minSteps
-     */
-    public boolean setAchievementSteps(String name, int minSteps) {
-        if (!mPlayServicesHelper.isSignedIn()) {
-            // TODO: Figure out if there an offline way of determining if the achievement has
-            // successfully been unlocked.
-            return false;
-        }
-        Games.Achievements.setSteps(mPlayServicesHelper.getApiClient(), getAchievementId(name),
-                minSteps);
-        return true;
-    }
-
-    /**
-     * @brief Launch an @c Intent to show the GPGS achievements activity screen.
-     */
-    public void showAchievementsRequested() {
-        if (!mPlayServicesHelper.isSignedIn()) {
-            return;
-        }
-        startActivityForResult(Games.Achievements.getAchievementsIntent(
-                mPlayServicesHelper.getApiClient()), RC_UNUSED);
-    }
-
-    /**
-     * @brief Resets all GPGS achievement progress for the currently signed in user account.
-     * @note This function is for debug / testing purposes only and will not work on GPGS accounts
-     * no longer in staging.
-     */
-    public void resetAchievementsRequested() {
-        mRevealedAchievements.clear();
-        mUnlockedAchievements.clear();
-        saveBufferedAchievements();
-        if (mPlayServicesHelper.isSignedIn()) {
-            // NOTE: Incremental achievements will look like they are not reset. However, this next
-            // time some steps are taken it will start from 0 and the Ui will look ok.
-            new ResetAchievementsTask().execute((Void) null);
-        }
-    }
-
-    /**
      * @brief Returns the version string of the Android application.
      */
     public String getVersionName() {
@@ -653,74 +284,6 @@ public class VoltAirActivity extends QtActivity implements InputManager.InputDev
             Log.e(LOG_TAG, e.getMessage());
             return null;
         }
-    }
-
-    /**
-     * @brief Sets the Google Analytics screen name and optionally sends a screen view hit.
-     * @param screenName Name of screen to be set
-     * @param sendScreenView @c true if a screen view hit should be sent
-     */
-    public void setTrackerScreenName(String screenName, boolean sendScreenView) {
-        mTracker.setScreenName(screenName);
-        if (sendScreenView) {
-            mTracker.send(new HitBuilders.AppViewBuilder().build());
-        }
-    }
-
-    /**
-     * @brief Sends an event hit to Google Analytics.
-     * @param category Category in which the event will be filed
-     * @param action Action associated with the event
-     */
-    public void sendTrackerEvent(String category, String action) {
-        mTracker.send(new HitBuilders.EventBuilder()
-                .setCategory(category)
-                .setAction(action)
-                .build());
-    }
-
-    /**
-     * @brief Sends an event hit to Google Analytics.
-     * @param category Category in which the event will be filed
-     * @param action Action associated with the event
-     * @param label Descriptive label used for further differentiation of categorical actions
-     */
-    public void sendTrackerEvent(String category, String action, String label) {
-        mTracker.send(new HitBuilders.EventBuilder()
-                .setCategory(category)
-                .setAction(action)
-                .setLabel(label)
-                .build());
-    }
-
-    /**
-     * @brief Sends an event hit to Google Analytics.
-     * @param category Category in which the event will be filed
-     * @param action Action associated with the event
-     * @param label Descriptive label used for further differentiation of categorical actions
-     * @param value Value to be logged with the event
-     */
-    public void sendTrackerEvent(String category, String action, String label, long value) {
-        mTracker.send(new HitBuilders.EventBuilder()
-                .setCategory(category)
-                .setAction(action)
-                .setLabel(label)
-                .setValue(value)
-                .build());
-    }
-
-    /**
-     * @brief Sends an event hit to Google Analytics.
-     * @param category Category in which the event will be filed
-     * @param action Action associated with the event
-     * @param value Value to be logged with the event
-     */
-    public void sendTrackerEvent(String category, String action, long value) {
-        mTracker.send(new HitBuilders.EventBuilder()
-                .setCategory(category)
-                .setAction(action)
-                .setValue(value)
-                .build());
     }
 
     /**
@@ -840,10 +403,5 @@ public class VoltAirActivity extends QtActivity implements InputManager.InputDev
     }
 
     private void saveBufferedAchievements() {
-        SharedPreferences settings = getSharedPreferences(VOLTAIR_PREFS, Context.MODE_PRIVATE);
-        settings.edit()
-                .putStringSet(REVEALED_ACHIEVEMENTS, mRevealedAchievements)
-                .putStringSet(UNLOCKED_ACHIEVEMENTS, mUnlockedAchievements)
-                .commit();
     }
 }
