@@ -241,10 +241,10 @@ def main():
   # Qt's deployment script requires you build into subdir of voltair_root.
   build_dir = os.path.join(voltair_root, parsed_args.build_dir)
 
-  if os.path.exists(build_dir):
-    err = "Error: Target directory %s exists. Exiting" % build_dir
-    print >> sys.stderr, err
-    return -1
+  #if os.path.exists(build_dir):
+  #  err = "Error: Target directory %s exists. Exiting" % build_dir
+  #  print >> sys.stderr, err
+  #  return -1
 
   try:
 
@@ -252,7 +252,8 @@ def main():
     RunLiquidFunNdkBuild(liquidfun_root + "/Box2D", parsed_args.ndk_root)
 
     # Create and move to voltair build target dir and start building.
-    os.mkdir(build_dir)
+    if not os.path.exists(build_dir):
+      os.mkdir(build_dir)
     Pushd(build_dir)
 
     # What follows are the required steps for building the an APK in Qt.  First
