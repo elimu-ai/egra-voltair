@@ -144,7 +144,7 @@ def RunMakeInstall():
 
 
 def RunAndroidDeployQt(qt_root, voltair_root, build_dir, ant, ndk_platform,
-                       jdk):
+                       jdk, keystore, key, password):
   """Run the 'androiddeployqt' command.
 
   Args:
@@ -171,11 +171,17 @@ def RunAndroidDeployQt(qt_root, voltair_root, build_dir, ant, ndk_platform,
       "--jdk",
       jdk,
       "--sign",
-      voltair_root + "/VoltAir/voltair.keystore",
-      "voltair_key",
+      keystore,
+      key,
       "--storepass",
-      "voltair",
+      password,
       "--verbose"
+
+      #voltair_root + "/VoltAir/voltair.keystore",
+      #"voltair_key",
+      #"--storepass",
+      #"voltair",
+      #"--verbose"
   ]
   RunSubprocess(androiddeployqt, build_dir)
 
@@ -222,6 +228,10 @@ def main():
                       help="Number of processes to use for 'make'")
   parser.add_argument("--output-apk", "-o", required=True,
                       help="Destination of produced APK")
+  parser.add_argument("--keyStore", required=True,
+                      help="Location of key store. For example: ~/.android/debug.keystore")
+  parser.add_argument("--key", required=True, help="Key name to use. For example: androiddebugkey")
+  parser.add_argument("--password", required=True, help="Password. For example: android")
 
   class ParsedArgs(object):
     """Class used to collect arguments from argparse."""
@@ -237,6 +247,10 @@ def main():
   voltair_root = os.path.join(orig_cwd, parsed_args.voltair_root)
   liquidfun_root = os.path.join(orig_cwd, parsed_args.liquidfun_root)
   qt_root = os.path.join(orig_cwd, parsed_args.qt_root)
+  keyStore = parsed_args.keyStore
+  key = parsed_args.key
+  password = parsed_args.password
+
 
   # Qt's deployment script requires you build into subdir of voltair_root.
   build_dir = os.path.join(voltair_root, parsed_args.build_dir)
@@ -275,7 +289,8 @@ def main():
     # the other files specified in the Qt project (e.g. java files,
     # AndroidManifest.xml, and so on).
     RunAndroidDeployQt(qt_root, voltair_root, build_dir, parsed_args.ant,
-                       parsed_args.ndk_platform, parsed_args.jdk)
+                       parsed_args.ndk_platform, parsed_args.jdk, 
+                       keyStore, key, password)
 
     # The 'androiddeployqt' executable leaves the APK in
     # QtApp-release.apk. Move it to a more descriptive location (i.e.
@@ -289,7 +304,7 @@ def main():
     Popd()
 
     # Remove the build dir in order to leave qt tree as we found it.
-    RemoveBuildDir(build_dir)
+    #RemoveBuildDir(build_dir)
 
   return 0
 
