@@ -170,13 +170,7 @@ def RunAndroidDeployQt(qt_root, voltair_root, build_dir, ant, ndk_platform,
       "--android-platform",
       ndk_platform,
       "--jdk",
-      jdk,
-      "--sign",
-      voltair_root + "/VoltAir/voltair.keystore",
-      "voltair_key",
-      "--storepass",
-      "voltair",
-      "--verbose"
+      jdk
   ]
   RunSubprocess(androiddeployqt, build_dir)
 
@@ -188,7 +182,7 @@ def RenameApk(dst_apk):
     dst_apk: name of destination apk
   """
 
-  src_apk = os.getcwd() + "/android-build/bin/QtApp-release-unsigned.apk"
+  src_apk = os.getcwd() + "/android-build/bin/QtApp-debug-unaligned.apk"
   print >> sys.stderr, "Renaming %s to %s" % (src_apk, dst_apk)
   os.rename(src_apk, dst_apk)
 
