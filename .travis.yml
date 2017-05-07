@@ -6,7 +6,12 @@ env:
 compiler:
   - gcc
 
+git:
+    submodules: false
+# Use sed to replace the SSH URL with the public URL, then initialize submodules
 before_install:
+    - sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules
+    - git submodule update --init --recursive
     - cat /etc/apt/sources.list
     - sudo apt-get update
     - sudo apt-get install --force-yes -qq p7zip openjdk-7-jdk ant lib32z1-dev lib32stdc++6  #lib32* are needed by Android SDK
