@@ -1,57 +1,27 @@
-# Handle git submodules yourself
-git:
-  submodules: false
+language : cpp
 
-language: android
+env:
+  - DISPLAY=:99.0
 
-jdk:
-  - oraclejdk8
-
-android:
-  components:
-    - tools
-    - build-tools-23.0.1
-    - android-23
-    - extra-android-m2repository
+compiler:
+  - gcc
 
 before_install:
-  # Android SDK configuration
-  - printenv
-  - export ANDROID_SDK_ROOT=/usr/local/android-sdk
-  - export PATH=$PATH:$ANDROID_SDK_ROOT/tools:$ANDROID_SDK_ROOT/platform-tools
-
-  # Android NDK configuration for Box2D
-  - printenv
-  - echo `pwd`
-  - wget http://dl.google.com/android/ndk/android-ndk-r9-linux-x86.tar.bz2
-  - chmod a+x android-ndk-r9-linux-x86.tar.bz2
-  - tar -xf android-ndk-r9-linux-x86.tar.bz2 -C $ANDROID_SDK_ROOT/ndk-bundle_r9
-  - ls -al $ANDROID_SDK_ROOT/ndk-bundle/android-ndk-r14b
-  - export NDK_ROOT_R9=$ANDROID_SDK_ROOT/ndk-bundle/android-ndk-r14b
-  - echo $NDK_ROOT_R9
-  - export PATH=$PATH:$NDK_ROOT_R9
-  - echo $PATH
-
-  # Android NDK configuration 
-  - printenv
-  - echo `pwd`
-  - wget https://dl.google.com/android/repository/android-ndk-r14b-linux-x86_64.zip
-  - chmod a+x android-ndk-r14b-linux-x86_64.zip
-  - unzip -qq android-ndk-r14b-linux-x86_64.zip -d $ANDROID_SDK_ROOT/ndk-bundle
-  - ls -al $ANDROID_SDK_ROOT/ndk-bundle/android-ndk-r14b
-  - export NDK_ROOT=$ANDROID_SDK_ROOT/ndk-bundle/android-ndk-r14b
-  - echo $NDK_ROOT
-  - export PATH=$PATH:$NDK_ROOT
-  - echo $PATH
-
-  - export ANT_ROOT=/usr/share/ant/bin
-  - export PATH=$PATH:$ANT_ROOT
-  - cd ..
-  - echo `pwd`
-  - printenv
-
+    - cat /etc/apt/sources.list
+    - sudo apt-get update
+    - sudo apt-get install --force-yes -qq p7zip openjdk-7-jdk ant lib32z1-dev lib32stdc++6  #lib32* are needed by Android SDK
+    - sudo apt-get install --force-yes python2.7
+    - sudo update-alternatives --display java
+    - sudo update-alternatives --set java /usr/lib/jvm/java-7-openjdk-amd64/jre/bin/java
+    - sh -e /etc/init.d/xvfb start
+    
 script:
-  - cocos compile -p android
-
-notifications:
-  email: false
+    - export WORKDIR=$PWD
+    - echo $PWD
+    - source path.env
+    - ./travisScripts/qt-5.8-android
+    - cat qt-5.8.0-android-travis.env
+    - ls $QT_ROOT
+    - source qt-5.8.0-android-travis.env
+    - export JDK=/usr/lib/jvm/java-7-openjdk-amd64
+    - build/build_android_debug.py --build-dir=bin --qt-root=$QT_ROOT --jdk=$JDK --sdk-root=$ANDROID_SDK_ROOT --ndk-root=$ANDROID_NDK_ROOT --ant=/usr/bin/ant --liquidfun-root=./third_party/liquidfun/liquidfun --output-apk=VoltAir.apk --num-process=2
