@@ -23,7 +23,6 @@ before_install:
 script:
     - export WORKDIR=$PWD
     - echo $PWD
-    - source path.env
     - ./travisScripts/qt-5.8-android
     - cat qt-5.8.0-android-travis.env
     - ls $QT_ROOT
