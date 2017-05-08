@@ -1,0 +1,31 @@
+language : cpp
+
+env:
+  - DISPLAY=:99.0
+
+compiler:
+  - gcc
+
+git:
+    submodules: false
+# Use sed to replace the SSH URL with the public URL, then initialize submodules
+before_install:
+    - sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules
+    - git submodule update --init --recursive
+    - cat /etc/apt/sources.list
+    - sudo apt-get update
+    - sudo apt-get install --force-yes -qq p7zip openjdk-7-jdk ant lib32z1-dev lib32stdc++6  #lib32* are needed by Android SDK
+    - sudo apt-get install --force-yes python2.7
+    - sudo update-alternatives --display java
+    - sudo update-alternatives --set java /usr/lib/jvm/java-7-openjdk-amd64/jre/bin/java
+    - sh -e /etc/init.d/xvfb start
+    
+script:
+    - export WORKDIR=$PWD
+    - echo $PWD
+    - ./travisScripts/qt-5.8-android
+    - cat qt-5.8.0-android-travis.env
+    - ls $QT_ROOT
+    - source qt-5.8.0-android-travis.env
+    - export JDK=/usr/lib/jvm/java-7-openjdk-amd64
+    - build/build_android_debug.py --build-dir=bin --qt-root=$QT_HOME --jdk=$JDK --sdk-root=$ANDROID_SDK_ROOT --ndk-root=$ANDROID_NDK_ROOT --ant=/usr/bin/ant --liquidfun-root=./third_party/liquidfun/liquidfun --output-apk=VoltAir.apk --num-process=2
