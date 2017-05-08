@@ -193,7 +193,7 @@ def RenameApk(dst_apk):
     dst_apk: name of destination apk
   """
 
-  src_apk = os.getcwd() + "/android-build/bin/QtApp-release.apk"
+  src_apk = os.getcwd() + "/android-build/bin/QtApp-release-signed.apk"
   print >> sys.stderr, "Renaming %s to %s" % (src_apk, dst_apk)
   os.rename(src_apk, dst_apk)
 
