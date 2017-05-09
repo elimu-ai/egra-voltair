@@ -69,7 +69,7 @@ def RunSubprocess(argv, rundir=None):
     #  raise RunProcessError(joined_argv, process.returncode)
 
 
-def SetEnvironment(sdk_root, ndk_root, ndk_platform):
+def SetEnvironment(sdk_root, ndk_root, ndk_platform, ndk_rootR9):
   """Set up the environment variables we need to run the various commands.
 
   Args:
@@ -81,7 +81,7 @@ def SetEnvironment(sdk_root, ndk_root, ndk_platform):
   os.environ["ANDROID_HOME"] = sdk_root
   os.environ["ANDROID_SDK_ROOT"] = sdk_root
   os.environ["ANDROID_NDK_ROOT"] = ndk_root
-  os.environ["ANDROID_NDK_ROOT_R9"] = ndk_root_r9
+  os.environ["ANDROID_NDK_ROOT_R9"] = ndk_rootR9
 
 _dirstack = []
 
@@ -257,7 +257,7 @@ def main():
     # What follows are the required steps for building the an APK in Qt.  First
     # we need to set up the environment as certain of the steps read it.
     SetEnvironment(parsed_args.sdk_root, parsed_args.ndk_root,
-                   parsed_args.ndk_platform)
+                   parsed_args.ndk_platform, parsed_args.ndk_rootR9)
 
     # 'qmake' is Qt's project builder. It will construct a Makefile that is then
     # run.
