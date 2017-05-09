@@ -20,6 +20,6 @@ export QT_ROOT=$PWD/Qt
 export QT_HOME=$PWD/Qt/5.8
 export ANDROID_SDK_ROOT=/usr/local/android-sdk 
 export ANDROID_NDK_ROOT=$PWD/android-ndk-r14b
-export ANDROID_NDK9_ROOT=$WPD/android-ndk-r9
+export ANDROID_NDK9_ROOT=$PWD/android-ndk-r9
 export PATH=$PWD/Qt/5.8/android_armv7/bin:$PWD/android-sdk-linux/tools:$PATH
 EOF
