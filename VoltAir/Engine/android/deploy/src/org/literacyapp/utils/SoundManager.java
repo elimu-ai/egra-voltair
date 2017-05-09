@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.fpl.utils;
+package org.literacyapp.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;

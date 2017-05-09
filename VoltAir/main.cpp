@@ -97,12 +97,12 @@ static void registerQmlFilesInDir(const QString& dirPath, const char* libStr) {
 
 int main(int argc, char* argv[]) {
     // @uri VoltAir
-    static const char* QML_LIBSTR = "VoltAir";
+    static const char* QML_LIBSTR = "voltair";
     QGuiApplication app(argc, argv);
 
     // Initialize QCoreApplication metadata
-    QCoreApplication::setOrganizationName("FunPropulsionLabs");
-    QCoreApplication::setOrganizationDomain("google.com");
+    QCoreApplication::setOrganizationName("LiteracyApp");
+    QCoreApplication::setOrganizationDomain("literacyapp.org");
     QCoreApplication::setApplicationName(QML_LIBSTR);
 
     qmlRegisterType<Actor>(QML_LIBSTR, 1, 0, "Actor");
