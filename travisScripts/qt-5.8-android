@@ -3,7 +3,7 @@
 echo Downloading Qt
 wget -c --no-check-certificate -nv https://download.qt.io/archive/qt/5.8/5.8.0/qt-opensource-linux-x64-android-5.8.0.run
 echo Installing Qt
-./extract-qt-installer qt-opensource-linux-x64-android-5.8.0.run $PWD/Qt
+extract-qt-installer qt-opensource-linux-x64-android-5.8.0.run $PWD/Qt
 
 #Travis do not come with NDK
 echo Installing NDK R9
