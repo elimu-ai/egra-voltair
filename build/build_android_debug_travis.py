@@ -211,7 +211,7 @@ def main():
                       help="Java Development Kit location")
   parser.add_argument("--sdk-root", required=True, help="Android SDK location")
   parser.add_argument("--ndk-root", required=True, help="Android NDK location")
-  parser.add_argument("--ndk-root-r9", required=True, help="Android NDK Release 9 location")
+  parser.add_argument("--ndk-rootR9", required=True, help="Android NDK Release 9 location")
   parser.add_argument("--ndk-platform", default="android-18",
                       help="Android platform (must be >= android-18)")
   parser.add_argument("--ant", required=True, help="ant binary location")
@@ -247,7 +247,7 @@ def main():
 
     # Move to liquidfun directory and build it.
     print "liquidfun_root" + liquidfun_root
-    RunLiquidFunNdkBuild(liquidfun_root + "/Box2D", parsed_args.ndk_root_r9)
+    RunLiquidFunNdkBuild(liquidfun_root + "/Box2D", parsed_args.ndk_rootR9)
 
     # Create and move to voltair build target dir and start building.
     if not os.path.exists(build_dir):
