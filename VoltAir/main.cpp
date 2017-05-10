@@ -97,7 +97,7 @@ static void registerQmlFilesInDir(const QString& dirPath, const char* libStr) {
 
 int main(int argc, char* argv[]) {
     // @uri VoltAir
-    static const char* QML_LIBSTR = "voltair";
+    static const char* QML_LIBSTR = "VoltAir";
     QGuiApplication app(argc, argv);
 
     // Initialize QCoreApplication metadata

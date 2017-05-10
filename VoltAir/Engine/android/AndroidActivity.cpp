@@ -37,7 +37,7 @@
 #include "audio/SoundManager.h"
 #include "inputs/InputArea.h"
 
-#define JAVA_PACKAGE_PREFIX "com/google/fpl/"
+#define JAVA_PACKAGE_PREFIX "org/literacyapp/"
 
 QMap<int, JoystickAxisCode> AndroidActivity::sGamepadJoystickAxisConversionMap({
             { AMOTION_EVENT_AXIS_X, LEFT_ANALOG_X },

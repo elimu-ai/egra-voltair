@@ -421,7 +421,7 @@ UiComponent {
         }
     }
 
-    MenuIcon {
+    /*MenuIcon {
         id: pgsButton
 
         anchors.top: parent.top
@@ -449,7 +449,7 @@ UiComponent {
                 root.signIntoCloudRequested()
             }
         }
-    }
+    }*/
 
     onEscaped: {
         if (state == "PROGRESSION_MENU") {

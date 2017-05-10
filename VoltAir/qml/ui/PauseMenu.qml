@@ -225,7 +225,7 @@ UiComponent {
         }
     }
 
-    MenuIcon {
+    /*MenuIcon {
         id: pgsButton
 
         anchors.top: parent.top
@@ -253,5 +253,5 @@ UiComponent {
                 root.signIntoCloudRequested()
             }
         }
-    }
+    }*/
 }
