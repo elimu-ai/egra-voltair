@@ -421,36 +421,6 @@ UiComponent {
         }
     }
 
-    /*MenuIcon {
-        id: pgsButton
-
-        anchors.top: parent.top
-        anchors.right: parent.right
-        anchors.topMargin: 0.01 * parent.height
-        anchors.rightMargin: 0.01 * parent.width
-
-        width: backButton.width
-        height: backButton.height
-
-        unselectedIconSource: root.signedIntoCloud
-                ? Util.getPathToImage("UI/play_services.png")
-                : Util.getPathToImage("UI/google_plus.png")
-        selectedIconSource: root.signedIntoCloud
-                ? Util.getPathToImage("UI/play_services_h.png")
-                : Util.getPathToImage("UI/google_plus_h.png")
-
-        focusDown: d.getCurrentMenu()
-        focusLeft: focusDown
-
-        onReleased: {
-            if (root.signedIntoCloud) {
-                root.showAchievementsRequested()
-            } else {
-                root.signIntoCloudRequested()
-            }
-        }
-    }*/
-
     onEscaped: {
         if (state == "PROGRESSION_MENU") {
             quitDialogRequested()
