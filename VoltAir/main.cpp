@@ -65,6 +65,8 @@
 #include "logics/RollingMovementLogic.h"
 #include "logics/WaterBodyLogic.h"
 
+#include <QDebug>
+
 static QObject* getEngineInstance(QQmlEngine*, QJSEngine*) {
     return Engine::getInstance();
 }
@@ -95,10 +97,18 @@ static void registerQmlFilesInDir(const QString& dirPath, const char* libStr) {
     }
 }
 
+void detectAndLoadLanguage()
+{
+    QString languageName = QLocale::languageToString(QLocale::system().language());
+    qDebug() << languageName;
+}
+
 int main(int argc, char* argv[]) {
     // @uri VoltAir
     static const char* QML_LIBSTR = "VoltAir";
     QGuiApplication app(argc, argv);
+
+    detectAndLoadLanguage();
 
     // Initialize QCoreApplication metadata
     QCoreApplication::setOrganizationName("LiteracyApp");
