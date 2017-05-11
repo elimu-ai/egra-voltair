@@ -64,7 +64,7 @@
 #include "logics/PickupLogic.h"
 #include "logics/RollingMovementLogic.h"
 #include "logics/WaterBodyLogic.h"
-
+#include "translations/tr.h"
 #include <QDebug>
 
 static QObject* getEngineInstance(QQmlEngine*, QJSEngine*) {
@@ -81,6 +81,10 @@ static QObject* getJointsInstance(QQmlEngine*, QJSEngine*) {
 
 static QObject* getQmlUtilInstance(QQmlEngine*, QJSEngine*) {
     return QmlUtil::getInstance();
+}
+
+static QObject* getTRInstance(QQmlEngine*, QJSEngine*) {
+    return TR::getInstance();
 }
 
 static void registerQmlFilesInDir(const QString& dirPath, const char* libStr) {
@@ -186,6 +190,7 @@ int main(int argc, char* argv[]) {
     qmlRegisterSingletonType<Game>(QML_LIBSTR, 1, 0, "Game", getGameInstance);
     qmlRegisterSingletonType<Joints>(QML_LIBSTR, 1, 0, "Joints", getJointsInstance);
     qmlRegisterSingletonType<QmlUtil>(QML_LIBSTR, 1, 0, "Util", getQmlUtilInstance);
+    qmlRegisterSingletonType<TR>(QML_LIBSTR, 1, 0, "TR", getTRInstance);
 
     // Add in all our Actor QML files.
     registerQmlFilesInDir("qml", QML_LIBSTR);

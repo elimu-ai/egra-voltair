@@ -151,7 +151,7 @@ UiComponent {
             height: pauseMenu.listItemHeight
             width: pauseMenu.listItemWidth
 
-            buttonText: menuOption
+            buttonText: TR.value(menuOption)
 
             onPressed: {
                 pauseMenu.listView.currentIndex = index
