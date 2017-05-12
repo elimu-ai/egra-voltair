@@ -15,7 +15,7 @@
  */
 
 // TODO: Remove VoltAir references in this file.
-package com.google.fpl.voltair;
+package org.literacyapp.voltair;
 
 import android.content.Context;
 import android.content.Intent;
@@ -33,8 +33,8 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.widget.Toast;
 
-import com.google.fpl.voltair.R;
-import com.google.fpl.utils.SoundManager;
+import org.literacyapp.voltair.R;
+import org.literacyapp.utils.SoundManager;
 
 import java.nio.charset.Charset;
 import java.util.HashSet;

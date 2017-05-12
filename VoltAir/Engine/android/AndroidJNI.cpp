@@ -64,24 +64,12 @@ static const JNINativeMethod JNI_METHODS[] = {
         reinterpret_cast<void*>(AndroidActivity::onTouchNavigationMotionEvent)
     },
     {
-        "onSignedIntoCloudChanged", "(Z)V",
-        reinterpret_cast<void*>(AndroidActivity::onSignedIntoCloudChanged)
-    },
-    {
         "onTouchNavigationKeyEvent", "(Landroid/view/KeyEvent;)Z",
         reinterpret_cast<void*>(AndroidActivity::onTouchNavigationKeyEvent)
     },
     {
         "onKeyboardKeyEvent", "(Landroid/view/KeyEvent;)Z",
         reinterpret_cast<void*>(AndroidActivity::onKeyboardKeyEvent)
-    },
-    {
-        "onCloudDataLoaded", "(ILjava/lang/String;)V",
-        reinterpret_cast<void*>(AndroidActivity::onCloudDataLoaded)
-    },
-    {
-        "onCloudDataConflict", "(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;",
-        reinterpret_cast<void*>(AndroidActivity::onCloudDataConflict)
     },
 };
 static const int sNumOfJNIMethods = sizeof(JNI_METHODS) / sizeof(JNI_METHODS[0]);

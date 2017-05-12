@@ -151,7 +151,7 @@ UiComponent {
             height: pauseMenu.listItemHeight
             width: pauseMenu.listItemWidth
 
-            buttonText: menuOption
+            buttonText: TR.value(menuOption)
 
             onPressed: {
                 pauseMenu.listView.currentIndex = index
@@ -221,36 +221,6 @@ UiComponent {
                 root.unmuteBGMRequested()
             } else {
                 root.muteBGMRequested()
-            }
-        }
-    }
-
-    MenuIcon {
-        id: pgsButton
-
-        anchors.top: parent.top
-        anchors.topMargin: 0.01 * parent.height
-        anchors.right: parent.right
-        anchors.rightMargin: 0.01 * parent.width
-
-        width: 0.09 * parent.width
-        height: width
-
-        unselectedIconSource: root.signedIntoCloud
-                ? Util.getPathToImage("UI/play_services.png")
-                : Util.getPathToImage("UI/google_plus.png")
-        selectedIconSource: root.signedIntoCloud
-                ? Util.getPathToImage("UI/play_services_h.png")
-                : Util.getPathToImage("UI/google_plus_h.png")
-
-        focusLeft: pauseMenu
-        focusDown: pauseMenu
-
-        onReleased: {
-            if (root.signedIntoCloud) {
-                root.showAchievementsRequested()
-            } else {
-                root.signIntoCloudRequested()
             }
         }
     }

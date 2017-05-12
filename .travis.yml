@@ -21,6 +21,8 @@ before_install:
     - sh -e /etc/init.d/xvfb start
     
 script:
+    - DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+    - export PATH=$PATH:$DIR/travisScripts
     - export WORKDIR=$PWD
     - echo $PWD
     - ./travisScripts/qt-5.8-android
@@ -28,4 +30,6 @@ script:
     - ls $QT_ROOT
     - source qt-5.8.0-android-travis.env
     - export JDK=/usr/lib/jvm/java-7-openjdk-amd64
-    - build/build_android_debug.py --build-dir=bin --qt-root=$QT_HOME --jdk=$JDK --sdk-root=$ANDROID_SDK_ROOT --ndk-root=$ANDROID_NDK_ROOT --ant=/usr/bin/ant --liquidfun-root=./third_party/liquidfun/liquidfun --output-apk=VoltAir.apk --num-process=2
+    - echo $PWD
+    - ls
+    - build/build_android_debug_travis.py --build-dir=bin --qt-root=$QT_HOME --voltair-root=$PWD --jdk=$JDK --sdk-root=$ANDROID_SDK_ROOT --ndk-root=$ANDROID_NDK_ROOT --ndk-rootR9=$ANDROID_NDK9_ROOT --ant=/usr/bin/ant --liquidfun-root=./third_party/liquidfun/liquidfun --output-apk=VoltAir.apk --num-process=2
