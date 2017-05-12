@@ -153,7 +153,7 @@ KeyNavFocusArea {
                     anchors.centerIn: parent
                     anchors.verticalCenterOffset: -0.08 * height
 
-                    textElement.text: titleText
+                    textElement.text: TR.value(titleText)
                     dropShadow.color: inactiveColor
                 }
             }

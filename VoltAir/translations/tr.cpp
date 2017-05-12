@@ -13,7 +13,7 @@ void TR::loadDictionary(const QString &language)
 
 QString TR::value(const QString &key) const
 {
-    return _dictionary.contains(key) ? _dictionary[key] : key;
+    return _dictionary.contains(key) ? _dictionary[key] : QString("TBT: %1").arg(key);
 }
 
 TR* TR::getInstance()

@@ -57,6 +57,7 @@ HEADERS += \
     logics/PickupLogic.h \
     logics/RollingMovementLogic.h \
     logics/WaterBodyLogic.h \
+    translations/tr.h
 
 INCLUDEPATH += \
     $$LIQUIDFUN_DIR/Box2D \
@@ -80,6 +81,7 @@ SOURCES += \
     logics/RollingMovementLogic.cpp \
     logics/WaterBodyLogic.cpp \
     main.cpp \
+    translations/tr.cpp
 
 include(Engine/Engine.pri)
 include(GameInput/GameInput.pri)

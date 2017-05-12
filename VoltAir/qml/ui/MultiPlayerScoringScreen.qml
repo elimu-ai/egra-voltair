@@ -336,7 +336,7 @@ UiComponent {
 
         enabled: false
         opacity: 0.0
-        buttonText: "Finish"
+        buttonText: TR.value("Finish")
 
         focusLeft: retryButton
         focusRight: pgsButton
