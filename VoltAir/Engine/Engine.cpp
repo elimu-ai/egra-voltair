@@ -402,57 +402,6 @@ void Engine::loadLevel(LevelInfo* levelInfo) {
     mNextLevelName = levelInfo->getFileName();
 }
 
-void Engine::setTrackerScreenName(const QString& screenName, bool sendScreenView) {
-#ifdef Q_OS_ANDROID
-    AndroidActivity::setTrackerScreenName(screenName, sendScreenView);
-#else
-    Q_UNUSED(screenName);
-    Q_UNUSED(sendScreenView);
-#endif
-}
-
-void Engine::sendTrackerEvent(const QString& category, const QString& action) {
-#ifdef Q_OS_ANDROID
-    AndroidActivity::sendTrackerEvent(category, action);
-#else
-    Q_UNUSED(category);
-    Q_UNUSED(action);
-#endif
-}
-
-void Engine::sendTrackerEvent(const QString& category, const QString& action,
-        const QString& label) {
-#ifdef Q_OS_ANDROID
-    AndroidActivity::sendTrackerEvent(category, action, label);
-#else
-    Q_UNUSED(category);
-    Q_UNUSED(action);
-    Q_UNUSED(label);
-#endif
-}
-
-void Engine::sendTrackerEvent(const QString& category, const QString& action, const QString& label,
-        long value) {
-#ifdef Q_OS_ANDROID
-    AndroidActivity::sendTrackerEvent(category, action, label, value);
-#else
-    Q_UNUSED(category);
-    Q_UNUSED(action);
-    Q_UNUSED(label);
-    Q_UNUSED(value);
-#endif
-}
-
-void Engine::sendTrackerEvent(const QString& category, const QString& action, long value) {
-#ifdef Q_OS_ANDROID
-    AndroidActivity::sendTrackerEvent(category, action, value);
-#else
-    Q_UNUSED(category);
-    Q_UNUSED(action);
-    Q_UNUSED(value);
-#endif
-}
-
 void Engine::onPlayLevelRequested() {
     mSoundManager->setPaused(false);
 }

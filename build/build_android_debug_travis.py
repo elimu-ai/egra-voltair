@@ -58,17 +58,18 @@ def RunSubprocess(argv, rundir=None):
       Pushd(rundir)
     joined_argv = " ".join(argv)
     print >> sys.stderr, "Running subprocess: %s" % joined_argv
+
     process = subprocess.Popen(argv)
     process.wait()
     print >> sys.stderr, "Subprocess succeeded."
   finally:
     if rundir is not None:
       Popd()
-    if process.returncode:
-      raise RunProcessError(joined_argv, process.returncode)
+    #if process.returncode:
+    #  raise RunProcessError(joined_argv, process.returncode)
 
 
-def SetEnvironment(sdk_root, ndk_root, ndk_platform):
+def SetEnvironment(sdk_root, ndk_root, ndk_platform, ndk_rootR9):
   """Set up the environment variables we need to run the various commands.
 
   Args:
@@ -80,6 +81,7 @@ def SetEnvironment(sdk_root, ndk_root, ndk_platform):
   os.environ["ANDROID_HOME"] = sdk_root
   os.environ["ANDROID_SDK_ROOT"] = sdk_root
   os.environ["ANDROID_NDK_ROOT"] = ndk_root
+  os.environ["ANDROID_NDK_ROOT_R9"] = ndk_rootR9
 
 _dirstack = []
 
@@ -100,7 +102,7 @@ def Popd():
   os.chdir(_dirstack.pop())
 
 
-def RunLiquidFunNdkBuild(cwd, ndk_root):
+def RunLiquidFunNdkBuild(cwd, ndk_root_r9):
   """Builds the liquidfun module.
 
   Args:
@@ -108,7 +110,7 @@ def RunLiquidFunNdkBuild(cwd, ndk_root):
     ndk_root: Android NDK location
   """
 
-  RunSubprocess([ndk_root + "/ndk-build", "V=1"], cwd)
+  RunSubprocess([ndk_root_r9 + "/ndk-build", "V=1"], cwd)
 
 
 def RunQmake(qt_root, voltair_root):
@@ -144,7 +146,7 @@ def RunMakeInstall():
 
 
 def RunAndroidDeployQt(qt_root, voltair_root, build_dir, ant, ndk_platform,
-                       jdk, keystore, key, password):
+                       jdk):
   """Run the 'androiddeployqt' command.
 
   Args:
@@ -165,23 +167,11 @@ def RunAndroidDeployQt(qt_root, voltair_root, build_dir, ant, ndk_platform,
       "bundled",
       "--ant",
       ant,
-      "--release",
+      "--debug",
       "--android-platform",
       ndk_platform,
       "--jdk",
-      jdk,
-      "--sign",
-      keystore,
-      key,
-      "--storepass",
-      password,
-      "--verbose"
-
-      #voltair_root + "/VoltAir/voltair.keystore",
-      #"voltair_key",
-      #"--storepass",
-      #"voltair",
-      #"--verbose"
+      jdk
   ]
   RunSubprocess(androiddeployqt, build_dir)
 
@@ -193,7 +183,7 @@ def RenameApk(dst_apk):
     dst_apk: name of destination apk
   """
 
-  src_apk = os.getcwd() + "/android-build/bin/QtApp-release-signed.apk"
+  src_apk = os.getcwd() + "/android-build/bin/QtApp-debug-unaligned.apk"
   print >> sys.stderr, "Renaming %s to %s" % (src_apk, dst_apk)
   os.rename(src_apk, dst_apk)
 
@@ -221,6 +211,7 @@ def main():
                       help="Java Development Kit location")
   parser.add_argument("--sdk-root", required=True, help="Android SDK location")
   parser.add_argument("--ndk-root", required=True, help="Android NDK location")
+  parser.add_argument("--ndk-rootR9", required=True, help="Android NDK Release 9 location")
   parser.add_argument("--ndk-platform", default="android-18",
                       help="Android platform (must be >= android-18)")
   parser.add_argument("--ant", required=True, help="ant binary location")
@@ -228,10 +219,6 @@ def main():
                       help="Number of processes to use for 'make'")
   parser.add_argument("--output-apk", "-o", required=True,
                       help="Destination of produced APK")
-  parser.add_argument("--keyStore", required=True,
-                      help="Location of key store. For example: ~/.android/debug.keystore")
-  parser.add_argument("--key", required=True, help="Key name to use. For example: androiddebugkey")
-  parser.add_argument("--password", required=True, help="Password. For example: android")
 
   class ParsedArgs(object):
     """Class used to collect arguments from argparse."""
@@ -247,10 +234,6 @@ def main():
   voltair_root = os.path.join(orig_cwd, parsed_args.voltair_root)
   liquidfun_root = os.path.join(orig_cwd, parsed_args.liquidfun_root)
   qt_root = os.path.join(orig_cwd, parsed_args.qt_root)
-  keyStore = parsed_args.keyStore
-  key = parsed_args.key
-  password = parsed_args.password
-
 
   # Qt's deployment script requires you build into subdir of voltair_root.
   build_dir = os.path.join(voltair_root, parsed_args.build_dir)
@@ -263,7 +246,8 @@ def main():
   try:
 
     # Move to liquidfun directory and build it.
-    RunLiquidFunNdkBuild(liquidfun_root + "/Box2D", parsed_args.ndk_root)
+    print "liquidfun_root" + liquidfun_root
+    RunLiquidFunNdkBuild(liquidfun_root + "/Box2D", parsed_args.ndk_rootR9)
 
     # Create and move to voltair build target dir and start building.
     if not os.path.exists(build_dir):
@@ -273,7 +257,7 @@ def main():
     # What follows are the required steps for building the an APK in Qt.  First
     # we need to set up the environment as certain of the steps read it.
     SetEnvironment(parsed_args.sdk_root, parsed_args.ndk_root,
-                   parsed_args.ndk_platform)
+                   parsed_args.ndk_platform, parsed_args.ndk_rootR9)
 
     # 'qmake' is Qt's project builder. It will construct a Makefile that is then
     # run.
@@ -289,22 +273,22 @@ def main():
     # the other files specified in the Qt project (e.g. java files,
     # AndroidManifest.xml, and so on).
     RunAndroidDeployQt(qt_root, voltair_root, build_dir, parsed_args.ant,
-                       parsed_args.ndk_platform, parsed_args.jdk, 
-                       keyStore, key, password)
+                       parsed_args.ndk_platform, parsed_args.jdk)
 
     # The 'androiddeployqt' executable leaves the APK in
     # QtApp-release.apk. Move it to a more descriptive location (i.e.
     # VoltAir.apk).
-    RenameApk(parsed_args.output_apk)
+    # RenameApk(parsed_args.output_apk)
 
   except RunProcessError, error:
     print >> sys.stderr, str(error)
     return error.return_code
   finally:
-    Popd()
+    #Popd()
 
     # Remove the build dir in order to leave qt tree as we found it.
     #RemoveBuildDir(build_dir)
+    print ""
 
   return 0
 

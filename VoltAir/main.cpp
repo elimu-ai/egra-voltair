@@ -64,6 +64,8 @@
 #include "logics/PickupLogic.h"
 #include "logics/RollingMovementLogic.h"
 #include "logics/WaterBodyLogic.h"
+#include "translations/tr.h"
+#include <QDebug>
 
 static QObject* getEngineInstance(QQmlEngine*, QJSEngine*) {
     return Engine::getInstance();
@@ -81,6 +83,10 @@ static QObject* getQmlUtilInstance(QQmlEngine*, QJSEngine*) {
     return QmlUtil::getInstance();
 }
 
+static QObject* getTRInstance(QQmlEngine*, QJSEngine*) {
+    return TR::getInstance();
+}
+
 static void registerQmlFilesInDir(const QString& dirPath, const char* libStr) {
     QDir dir(Util::getPathToAsset(dirPath));
     for (const QString& path : dir.entryList()) {
@@ -95,14 +101,22 @@ static void registerQmlFilesInDir(const QString& dirPath, const char* libStr) {
     }
 }
 
+void detectAndLoadLanguage()
+{
+    QString languageName = QLocale::languageToString(QLocale::system().language());
+    qDebug() << languageName;
+}
+
 int main(int argc, char* argv[]) {
     // @uri VoltAir
     static const char* QML_LIBSTR = "VoltAir";
     QGuiApplication app(argc, argv);
 
+    detectAndLoadLanguage();
+
     // Initialize QCoreApplication metadata
-    QCoreApplication::setOrganizationName("FunPropulsionLabs");
-    QCoreApplication::setOrganizationDomain("google.com");
+    QCoreApplication::setOrganizationName("LiteracyApp");
+    QCoreApplication::setOrganizationDomain("literacyapp.org");
     QCoreApplication::setApplicationName(QML_LIBSTR);
 
     qmlRegisterType<Actor>(QML_LIBSTR, 1, 0, "Actor");
@@ -176,6 +190,7 @@ int main(int argc, char* argv[]) {
     qmlRegisterSingletonType<Game>(QML_LIBSTR, 1, 0, "Game", getGameInstance);
     qmlRegisterSingletonType<Joints>(QML_LIBSTR, 1, 0, "Joints", getJointsInstance);
     qmlRegisterSingletonType<QmlUtil>(QML_LIBSTR, 1, 0, "Util", getQmlUtilInstance);
+    qmlRegisterSingletonType<TR>(QML_LIBSTR, 1, 0, "TR", getTRInstance);
 
     // Add in all our Actor QML files.
     registerQmlFilesInDir("qml", QML_LIBSTR);
