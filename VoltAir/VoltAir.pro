@@ -90,5 +90,6 @@ include(renderer/Renderer.pri)
 include(deployment.pri)
 
 RESOURCES += \
+    resources/voltair.qrc
 
 cache()

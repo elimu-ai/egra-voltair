@@ -8,6 +8,7 @@ TR::TR(QObject *parent) : QObject(parent)
 {
     _currentLanguage = "";
     _dictionary.clear();
+    _initialized = false;
 }
 
 void TR::parseFileLine(const QString &line)
@@ -18,10 +19,19 @@ void TR::parseFileLine(const QString &line)
     _dictionary[key] = value;
 }
 
-void TR::loadDictionary(const QString &language)
+void TR::setCurrentLanguage(QString language)
+{
+    if (_currentLanguage != language)
+    {
+        _currentLanguage = language;
+        _initialized = false;
+    }
+}
+
+void TR::loadDictionary()
 {
     //_dictionary.clear();
-    QString filename = QString(":/translations/values-%1.properties").arg(language);
+    QString filename = ":/translations/values-" + _currentLanguage + ".properties";
     QFile file(filename);
     if (file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
@@ -31,11 +41,17 @@ void TR::loadDictionary(const QString &language)
             QString line = in.readLine();
             parseFileLine(line);
         }
+        file.close();
     }
+    _initialized = true;
 }
 
-QString TR::value(const QString &key) const
+QString TR::value(const QString &key)
 {
+    if (!_initialized)
+    {
+        loadDictionary();
+    }
     return _dictionary.contains(key) ? _dictionary[key] : QString("TBT: %1").arg(key);
 }
 

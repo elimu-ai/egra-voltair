@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/"/>
+    <qresource prefix="/translations">
+        <file>values-Spanish.properties</file>
+    </qresource>
+</RCC>
