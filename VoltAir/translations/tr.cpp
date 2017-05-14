@@ -52,6 +52,7 @@ QString TR::value(const QString &key)
     {
         loadDictionary();
     }
+    // TODO: Remove TBT when finishing translations.
     return _dictionary.contains(key) ? _dictionary[key] : QString("TBT: %1").arg(key);
 }
 

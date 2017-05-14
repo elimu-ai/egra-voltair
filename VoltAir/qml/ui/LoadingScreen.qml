@@ -108,6 +108,6 @@ UiComponent {
         width: loading.width
         height: 0.25 * loading.height
 
-        textElement.text: TR.value("Loading")
+        textElement.text: TR.value("loading")
     }
 }

@@ -31,10 +31,10 @@ LevelProgressionList {
 
     progressions: [
         LevelProgression {
-            name: "Single Player"
+            name: "single.player"
             environments: [
                 Environment {
-                    name: "Planetfall"
+                    name: "planetfall"
                     levelInfos: [
                         LevelInfo {
                             name: "1-1"
@@ -70,7 +70,7 @@ LevelProgressionList {
                     achievementsToRevealOnPassing: ["stargazing"]
                 },
                 Environment {
-                    name: "Underworld"
+                    name: "underworld"
                     levelInfos: [
                         LevelInfo {
                             name: "2-1"
@@ -100,7 +100,7 @@ LevelProgressionList {
                     achievementsToRevealOnPassing: ["escape_velocity"]
                 },
                 Environment {
-                    name: "Moonlight"
+                    name: "moonlight"
                     levelInfos: [
                         LevelInfo {
                             name: "3-1"
@@ -118,11 +118,11 @@ LevelProgressionList {
             achievementToUnlockOnPerfection: "collect_all_the_things"
         },
         LevelProgression {
-            name: "Multiplayer"
+            name: "multiplayer"
             multiplayer: true
             environments: [
                 Environment {
-                    name: "Arenas"
+                    name: "arenas"
                     levelInfos: [
                         LevelInfo {
                             name: "Ice Cave"

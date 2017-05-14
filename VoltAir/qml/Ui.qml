@@ -423,9 +423,9 @@ UiInternal {
         height: 0.6 * parent.height
         anchors.centerIn: parent
 
-        questionText: TR.value("Quit?")
-        cancelText: TR.value("No")
-        confirmText: TR.value("Yes")
+        questionText: TR.value("quit.question")
+        cancelText: TR.value("no")
+        confirmText: TR.value("yes")
 
         onHideCompleted: {
             if (root.state == "PAUSE_MENU") {

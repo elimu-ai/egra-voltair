@@ -2,5 +2,7 @@
     <qresource prefix="/"/>
     <qresource prefix="/translations">
         <file>values-Spanish.properties</file>
+        <file>values-Swahili.properties</file>
+        <file>values-English.properties</file>
     </qresource>
 </RCC>

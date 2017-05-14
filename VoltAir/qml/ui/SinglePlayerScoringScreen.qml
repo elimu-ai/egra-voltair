@@ -522,7 +522,7 @@ UiComponent {
         focus: true
 
         opacity: 0
-        buttonText: root.gameCompleted ? "Finish" : "Next"
+        buttonText: root.gameCompleted ? "finish" : "next"
 
         focusRight: pgsButton
         focusUp: pgsButton
