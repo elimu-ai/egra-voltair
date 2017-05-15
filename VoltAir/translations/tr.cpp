@@ -30,7 +30,7 @@ void TR::setCurrentLanguage(QString language)
 
 void TR::loadDictionary()
 {
-    //_dictionary.clear();
+    _dictionary.clear();
     QString filename = ":/translations/values-" + _currentLanguage + ".properties";
     QFile file(filename);
     if (file.open(QIODevice::ReadOnly | QIODevice::Text))
@@ -42,6 +42,12 @@ void TR::loadDictionary()
             parseFileLine(line);
         }
         file.close();
+    }
+    else
+    {
+        // Fallback to English
+        setCurrentLanguage("English");
+        loadDictionary();
     }
     _initialized = true;
 }
