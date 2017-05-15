@@ -8,16 +8,21 @@ class TR : public QObject
 {
     Q_OBJECT
 public:
-    static void loadDictionary(const QString &language);
+    Q_INVOKABLE void setCurrentLanguage(QString language);
 
-    Q_INVOKABLE QString value(const QString &key) const;
+    Q_INVOKABLE QString value(const QString &key);
 
     static TR* getInstance();
 private:
     TR(QObject* parent = nullptr);
-    static TR* sInstance;
+
+    void loadDictionary();
+    void parseFileLine(const QString &line);    
 
     QMap<QString, QString> _dictionary;
+    QString _currentLanguage;
+    bool _initialized;
+    static TR* sInstance;
 };
 
 #endif // TR_H

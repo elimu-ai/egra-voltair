@@ -215,7 +215,7 @@ UiComponent {
     Toast {
         id: toast
 
-        textElement.text: "Connect controllers to play with your friends!"
+        textElement.text: TR.value("connect.controllers")
 
         width: 0.6 * parent.width
         height: 0.15 * parent.height

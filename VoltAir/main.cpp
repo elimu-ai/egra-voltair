@@ -104,7 +104,7 @@ static void registerQmlFilesInDir(const QString& dirPath, const char* libStr) {
 void detectAndLoadLanguage()
 {
     QString languageName = QLocale::languageToString(QLocale::system().language());
-    qDebug() << languageName;
+    TR::getInstance()->setCurrentLanguage(languageName);
 }
 
 int main(int argc, char* argv[]) {
