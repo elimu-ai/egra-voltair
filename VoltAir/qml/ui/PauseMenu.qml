@@ -120,13 +120,13 @@ UiComponent {
         // How to handle menu item selection.
         function onItemSelected(index) {
             var menuOption = listView.model.get(index).menuOption
-            if (menuOption == "Resume") {
+            if (menuOption == "resume") {
                 root.resumeRequested()
-            } else if (menuOption == "Main Menu") {
+            } else if (menuOption == "main.menu") {
                 root.changeLevelProgressionRequested()
-            } else if (menuOption == "Change Level") {
+            } else if (menuOption == "change.level") {
                 root.changeLevelRequested()
-            } else if (menuOption == "Quit"){
+            } else if (menuOption == "quit"){
                 root.quitDialogRequested()
             }
         }
@@ -140,10 +140,10 @@ UiComponent {
         listView.spacing: 0.0
 
         listView.model: ListModel {
-            ListElement { menuOption: "Resume" }
-            ListElement { menuOption: "Main Menu" }
-            ListElement { menuOption: "Change Level" }
-            ListElement { menuOption: "Quit" }
+            ListElement { menuOption: "resume" }
+            ListElement { menuOption: "main.menu" }
+            ListElement { menuOption: "change.level" }
+            ListElement { menuOption: "quit" }
         }
 
         // Template description of a menu item
