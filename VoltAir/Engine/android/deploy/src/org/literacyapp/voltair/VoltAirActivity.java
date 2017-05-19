@@ -366,6 +366,8 @@ public class VoltAirActivity extends QtActivity implements InputManager.InputDev
      */
     public native String onCloudDataConflict(String localData, String serverData);
 
+    public native void onStudentUpdateReceiver(String availableLetters, String availableNumbers);
+
     private static boolean isSourceType(InputDevice device, int querySource) {
         if (device == null) {
             return false;
@@ -425,6 +427,7 @@ public class VoltAirActivity extends QtActivity implements InputManager.InputDev
         if (availableNumbers != null) {
             Log.e(LOG_TAG, availableNumbers);
         }
+        onStudentUpdateReceiver(availableLetters, availableNumbers);
     }
 
 }

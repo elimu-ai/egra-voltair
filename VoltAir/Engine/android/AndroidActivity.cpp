@@ -601,4 +601,8 @@ QKeyEvent* AndroidActivity::convertAndroidKeyEvent(int action, KeyCode keyCode) 
     return new QKeyEvent(translatedAction, translatedKeyCode, Qt::NoModifier);
 }
 
+void AndroidActivity::onStudentUpdateReceiver(JNIEnv* env, jstring availableLetters, jstring availableNumbers)
+{
+}
+
 #endif // Q_OS_ANDROID
