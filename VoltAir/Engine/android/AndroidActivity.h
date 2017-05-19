@@ -224,7 +224,7 @@ public:
      */
     static void setBGMPaused(bool value);
 
-    static void onStudentUpdateReceiver(JNIEnv *env, jobject obj, jstring availableLetters, jstring availableNumbers);
+    static void onStudentUpdateReceiver(JNIEnv *env, jobject obj, jstring availableLetters);
 
 private:
     static bool onKeyEvent(JNIEnv* jni, jobject keyEvent, ControllerEvent* controllerEvent);

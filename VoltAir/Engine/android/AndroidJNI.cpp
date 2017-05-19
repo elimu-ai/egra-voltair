@@ -72,7 +72,7 @@ static const JNINativeMethod JNI_METHODS[] = {
         reinterpret_cast<void*>(AndroidActivity::onKeyboardKeyEvent)
     },
     {
-        "onStudentUpdateReceiver", "(Ljava/lang/String;Ljava/lang/String;)V",
+        "onStudentUpdateReceiver", "(Ljava/lang/String;)V",
         reinterpret_cast<void*>(AndroidActivity::onStudentUpdateReceiver)
     },
 };

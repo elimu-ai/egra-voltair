@@ -602,14 +602,11 @@ QKeyEvent* AndroidActivity::convertAndroidKeyEvent(int action, KeyCode keyCode) 
     return new QKeyEvent(translatedAction, translatedKeyCode, Qt::NoModifier);
 }
 
-void AndroidActivity::onStudentUpdateReceiver(JNIEnv* env, jobject obj, jstring availableLetters, jstring availableNumbers)
+void AndroidActivity::onStudentUpdateReceiver(JNIEnv* env, jobject obj, jstring availableLetters)
 {
-    const char *userName = env->GetStringUTFChars(availableLetters,0);
     QString letters(env->GetStringUTFChars(availableLetters, 0));
-    QString numbers(env->GetStringUTFChars(availableNumbers, 0));
-
-    qDebug() << letters;
-    qDebug() << numbers;
+    Engine* engine = Engine::getInstance();
+    engine->setValidLettersAndNumbers(letters);
 }
 
 #endif // Q_OS_ANDROID

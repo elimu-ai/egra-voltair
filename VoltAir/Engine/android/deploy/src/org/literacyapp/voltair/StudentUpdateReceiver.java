@@ -30,9 +30,9 @@ public class StudentUpdateReceiver extends BroadcastReceiver {
         //ArrayList<String> availableLetters = intent.getStringArrayListExtra("availableLetters");
         Log.i(getClass().getName(), "availableLetters: " + availableLetters);
 
-        String availableNumbers = intent.getExtras().getString("availableNumbers");
+        /*String availableNumbers = intent.getExtras().getString("availableNumbers");
         //ArrayList<String> availableNumbers = intent.getStringArrayListExtra("availableNumbers");
-        Log.i(getClass().getName(), "availableNumbers: " + availableNumbers);
+        Log.i(getClass().getName(), "availableNumbers: " + availableNumbers);*/
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
 
@@ -55,7 +55,7 @@ public class StudentUpdateReceiver extends BroadcastReceiver {
         }*/
 
         if (mActivity != null) {
-            mActivity.studentUpdateReceiver(availableLetters, availableNumbers);
+            mActivity.studentUpdateReceiver(availableLetters);
         }
     }
 }

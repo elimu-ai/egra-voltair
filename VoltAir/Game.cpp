@@ -335,6 +335,14 @@ void Game::revealAchievement(const QString& name, bool immediately) {
     mPlayerProfile.revealAchievement(name, immediately);
 }
 
+QString Game::getValidLetter(const double randomNumber)
+{
+    QString validLetters = Engine::getInstance()->validLetters();
+    int letterIndex = (int) (validLetters.length()  * randomNumber);
+    qDebug() << validLetters.at(letterIndex);
+    return validLetters.at(letterIndex);
+}
+
 void Game::onUiActiveChanged(bool isActive) {
     mIsUiActive = isActive;
 }

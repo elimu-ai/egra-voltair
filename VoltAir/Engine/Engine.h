@@ -357,6 +357,9 @@ public:
      */
     void deleteCurrentLevel();
 
+    void setValidLettersAndNumbers(const QString &letters);
+    QString validLetters() const;
+
     // TODO: Split this into two methods: create and getInstance()
     /**
      * @brief Returns the global singleton instance of Engine.
@@ -605,6 +608,8 @@ private:
     std::unique_ptr<b2World> mWorldToDelete;
     mutable QSet<const QMetaObject*> mValidCacheSet;
     LevelInfo* mInFlightLevelInfo;
+
+    QString mValidLetters;
 
     static Engine* sInstance;
 };

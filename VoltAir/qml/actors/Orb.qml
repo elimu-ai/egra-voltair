@@ -36,7 +36,7 @@ Actor {
 
     ImageRenderer {
         function chooseLetter() {
-            return Math.random() > 0.5 ? "A" : "B";
+            return Game.getValidLetter(Math.random());// > 0.5 ? "A" : "B";
         }
         id: graphic
 
