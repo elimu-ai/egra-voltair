@@ -19,6 +19,7 @@ package org.literacyapp.voltair;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.hardware.input.InputManager;
@@ -46,6 +47,8 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.qtproject.qt5.android.bindings.QtActivity;
 
+import java.util.ArrayList;
+
 /**
  * @brief Subclass of QtActivity to provide Android-specific functionality.
  *
@@ -72,6 +75,7 @@ public class VoltAirActivity extends QtActivity implements InputManager.InputDev
     // Data to save to cloud when connection is established
     private String mBufferedCloudData = null;
     private SoundManager mSoundManager = null;
+    private StudentUpdateReceiver mStudentUpdateReceiver = null;
 
     /**
      * @brief Called when the activity is starting.
@@ -89,6 +93,11 @@ public class VoltAirActivity extends QtActivity implements InputManager.InputDev
 
         mSoundManager = new SoundManager();
 
+        mStudentUpdateReceiver = new StudentUpdateReceiver();
+        mStudentUpdateReceiver.setActivity(this);
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("literacyapp.intent.action.STUDENT_UPDATED");
+        registerReceiver(mStudentUpdateReceiver, filter);
         onApplicationCreate();
     }
 
@@ -153,6 +162,10 @@ public class VoltAirActivity extends QtActivity implements InputManager.InputDev
      */
     @Override
     public void onDestroy() {
+        if (mStudentUpdateReceiver != null) {
+            unregisterReceiver(mStudentUpdateReceiver);
+            mStudentUpdateReceiver = null;
+        }
         super.onDestroy();
         onApplicationDestroy();
     }
@@ -404,4 +417,14 @@ public class VoltAirActivity extends QtActivity implements InputManager.InputDev
 
     private void saveBufferedAchievements() {
     }
+
+    public void studentUpdateReceiver(String availableLetters, String availableNumbers) {
+        if (availableLetters != null) {
+            Log.i(LOG_TAG, availableLetters);
+        }
+        if (availableNumbers != null) {
+            Log.e(LOG_TAG, availableNumbers);
+        }
+    }
+
 }
