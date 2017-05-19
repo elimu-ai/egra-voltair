@@ -30,6 +30,7 @@
 #include <cassert>
 #include <cmath>
 #include "Engine.h"
+#include <QtAndroidExtras/QtAndroidExtras>
 // TODO: remove references to Game from this module.
 #include "Game.h"
 #include "LevelProgression.h"
@@ -601,8 +602,14 @@ QKeyEvent* AndroidActivity::convertAndroidKeyEvent(int action, KeyCode keyCode) 
     return new QKeyEvent(translatedAction, translatedKeyCode, Qt::NoModifier);
 }
 
-void AndroidActivity::onStudentUpdateReceiver(JNIEnv* env, jstring availableLetters, jstring availableNumbers)
+void AndroidActivity::onStudentUpdateReceiver(JNIEnv* env, jobject obj, jstring availableLetters, jstring availableNumbers)
 {
+    const char *userName = env->GetStringUTFChars(availableLetters,0);
+    QString letters(env->GetStringUTFChars(availableLetters, 0));
+    QString numbers(env->GetStringUTFChars(availableNumbers, 0));
+
+    qDebug() << letters;
+    qDebug() << numbers;
 }
 
 #endif // Q_OS_ANDROID
