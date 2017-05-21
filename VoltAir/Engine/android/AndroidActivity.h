@@ -205,8 +205,9 @@ public:
      * @note See SoundManager::setBGMTrack for more details.
      * @param priority Priority level of BGM to set
      * @param track Name of track to use for BGM
+     * @param volume Volume level of BGM to set
      */
-    static void setBGMTrack(int priority, const QString& track);
+    static void setBGMTrack(int priority, const QString& track, int volume);
     /**
      * @brief Returns whether or not the Android SoundManager's background music is muted.
      * @note See SoundManager::isBGMMuted for more details.

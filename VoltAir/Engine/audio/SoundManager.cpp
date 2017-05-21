@@ -47,9 +47,9 @@ void SoundManager::clearBGMTrack(BGMPriority priority) {
 #endif
 }
 
-void SoundManager::setBGMTrack(BGMPriority priority, const QString& path) {
+void SoundManager::setBGMTrack(BGMPriority priority, const QString& path, int volumeLevel) {
 #ifdef Q_OS_ANDROID
-    AndroidActivity::setBGMTrack(int(priority), path);
+    AndroidActivity::setBGMTrack(int(priority), path, volumeLevel);
 #else
     if (priority != InvalidPriority) {
         QUrl track = Util::getUrlPathToAsset(path);

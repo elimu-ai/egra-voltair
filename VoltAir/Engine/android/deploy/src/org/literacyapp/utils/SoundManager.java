@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.lang.Runnable;
 import java.util.LinkedList;
 import java.util.TreeMap;
+import java.util.HashMap;
 
 /**
  * @brief Controls the background audio tracks that need gapless playback and looping on Android
@@ -57,9 +58,11 @@ public class SoundManager implements MediaPlayer.OnCompletionListener {
      */
     private class TransitionBGMTask implements Runnable {
         private String mTrack;
+        private Integer mVolumeLevel;
 
-        public TransitionBGMTask(String track) {
+        public TransitionBGMTask(String track, Integer volumeLevel) {
             this.mTrack = track;
+            this.mVolumeLevel = volumeLevel;
         }
 
         @Override
@@ -67,7 +70,7 @@ public class SoundManager implements MediaPlayer.OnCompletionListener {
             if (mCurrentBGMTrack != null) {
                 // Are we still fading out?
                 if (mCurrentVolumeStep > 0) {
-                    updateMediaPlayerVolumes(-1);
+                    updateMediaPlayerVolumes(-1, mVolumeLevel);
                 } else {
                     destroyMediaPlayers();
                     if (mTrack == null) {
@@ -78,17 +81,18 @@ public class SoundManager implements MediaPlayer.OnCompletionListener {
             } else if (mTrack != null) {
                 // Make sure the BGMPlayers have been initialized for the new track.
                 if (mBGMPlayer == null || mBGMPlayerBuffered == null) {
-                    mBGMPlayer = initMediaPlayer(mTrack);
-                    mBGMPlayerBuffered = initMediaPlayer(mTrack);
+                    mBGMPlayer = initMediaPlayer(mTrack, mVolumeLevel);
+                    mBGMPlayerBuffered = initMediaPlayer(mTrack, mVolumeLevel);
                     mBGMPlayer.setNextMediaPlayer(mBGMPlayerBuffered);
                     mBGMPlayer.start();
                 }
 
                 // Are we still fading in?
                 if (mCurrentVolumeStep < NUM_VOLUME_STEPS) {
-                    updateMediaPlayerVolumes(1);
+                    updateMediaPlayerVolumes(1, mVolumeLevel);
                 } else {
                     mCurrentBGMTrack = mTrack;
+                    mCurrentVolumeLevel = mVolumeLevel;
                     startNextFadeTask();
                     return;
                 }
@@ -99,9 +103,10 @@ public class SoundManager implements MediaPlayer.OnCompletionListener {
     }
 
     private final Handler mHandler = new Handler();
-    private final TreeMap<Integer, String> mBGMTracks = new TreeMap<Integer, String>();
+    private final TreeMap<Integer, HashMap<Integer, String>> mBGMTracks = new TreeMap<Integer, HashMap<Integer, String>>();
     private Context mContext = null;
     private String mCurrentBGMTrack = null;
+    private Integer mCurrentVolumeLevel = 10;
     private MediaPlayer mBGMPlayer = null;
     private MediaPlayer mBGMPlayerBuffered = null;
     private int mCurrentVolumeStep = 0;
@@ -166,15 +171,20 @@ public class SoundManager implements MediaPlayer.OnCompletionListener {
      * @brief Sets the audio track of the specified background priority level.
      * @param priority %Background music priority level to set the audio track for
      * @param track Audio track asset path to load for the sound effect
+     * @param volume %Background music volume level to set the audio track for
      */
-    public void setBGMTrack(int priority, String track) {
+    public void setBGMTrack(int priority, String track, int volume) {
         if (mContext == null) {
             return;
         }
 
         if (priority != INVALID_PRIORITY) {
-            if (!track.equals(mBGMTracks.get(priority))) {
-                mBGMTracks.put(priority, track);
+            HashMap<Integer, String> trackmap = mBGMTracks.get(priority);
+            String trackCur = trackmap != null ? trackmap.get(trackmap.keySet().toArray(new Integer[0])[0]) : null;
+            if (!track.equals(trackCur)) {
+                HashMap<Integer, String> hm = new HashMap<Integer, String>(1);
+                hm.put(volume, track);
+                mBGMTracks.put(priority, hm);
                 updateCurrentBGMTrack();
             }
         }
@@ -186,7 +196,7 @@ public class SoundManager implements MediaPlayer.OnCompletionListener {
      */
     public void setBGMMuted(boolean value) {
         mBGMMuted = value;
-        updateMediaPlayerVolumes(0);
+        updateMediaPlayerVolumes(0, mCurrentVolumeLevel);
     }
 
     /**
@@ -216,27 +226,34 @@ public class SoundManager implements MediaPlayer.OnCompletionListener {
     public void onCompletion(MediaPlayer mp) {
         destroyMediaPlayer(mBGMPlayer);
         mBGMPlayer = mBGMPlayerBuffered;
-        mBGMPlayerBuffered = initMediaPlayer(mCurrentBGMTrack);
+        mBGMPlayerBuffered = initMediaPlayer(mCurrentBGMTrack, mCurrentVolumeLevel);
         mBGMPlayer.setNextMediaPlayer(mBGMPlayerBuffered);
     }
 
     private void updateCurrentBGMTrack() {
         int highestPriority = (!mBGMTracks.isEmpty()) ? mBGMTracks.lastKey() : INVALID_PRIORITY;
-        String track = mBGMTracks.get(highestPriority);
+
+        Integer volume = mCurrentVolumeLevel;
+        String track = null;
+        if(highestPriority != INVALID_PRIORITY) {
+            HashMap<Integer, String> trackmap = mBGMTracks.get(highestPriority);
+            volume = trackmap.keySet().toArray(new Integer[0])[0];
+            track = trackmap.get(volume);
+        }
         if (track != mCurrentBGMTrack) {
             if ((track == null && mCurrentBGMTrack != null) || !track.equals(mCurrentBGMTrack)) {
-                queueFadeTask(new TransitionBGMTask(track));
+                queueFadeTask(new TransitionBGMTask(track, volume));
             }
         }
     }
 
-    private MediaPlayer initMediaPlayer(String track) {
+    private MediaPlayer initMediaPlayer(String track, Integer volumeLevel) {
         MediaPlayer mp = new MediaPlayer();
         try {
             AssetFileDescriptor afd = mContext.getAssets().openFd(track);
             mp.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
             mp.setOnCompletionListener(this);
-            setVolume(mp);
+            setVolume(mp, volumeLevel);
             mp.prepare();
         } catch (IOException ex) {
             Log.e(LOG_TAG, "Could not initialize MediaPlayer", ex);
@@ -251,6 +268,7 @@ public class SoundManager implements MediaPlayer.OnCompletionListener {
         destroyMediaPlayer(mBGMPlayerBuffered);
         mBGMPlayerBuffered = null;
         mCurrentBGMTrack = null;
+        mCurrentVolumeLevel = 10;
     }
 
     private static void destroyMediaPlayer(MediaPlayer mp) {
@@ -262,21 +280,21 @@ public class SoundManager implements MediaPlayer.OnCompletionListener {
         }
     }
 
-    private void updateMediaPlayerVolumes(int numSteps) {
+    private void updateMediaPlayerVolumes(int numSteps, Integer volumeLevel) {
         // Update the current volume step.
         mCurrentVolumeStep += numSteps;
         mCurrentVolumeStep = Math.max(0, Math.min(NUM_VOLUME_STEPS, mCurrentVolumeStep));
 
-        setVolume(mBGMPlayer);
-        setVolume(mBGMPlayerBuffered);
+        setVolume(mBGMPlayer, volumeLevel);
+        setVolume(mBGMPlayerBuffered, volumeLevel);
     }
 
-    private void setVolume(MediaPlayer mp) {
+    private void setVolume(MediaPlayer mp, Integer volumeLevel) {
         // Scale the volume step logarithmically.
         float volume = mBGMMuted
                 ? 0.0f : 1.0f - (((float) Math.log(NUM_VOLUME_STEPS - mCurrentVolumeStep)) /
                 (float) Math.log(NUM_VOLUME_STEPS));
-        volume = Math.max(0.0f, Math.min(1.0f, volume));
+        volume = Math.max(0.0f, Math.min(1.0f, volume)) / volumeLevel;
         if (mp != null) {
             mp.setVolume(volume, volume);
         }
