@@ -30,6 +30,7 @@
 #include <cassert>
 #include <cmath>
 #include "Engine.h"
+#include <QtAndroidExtras/QtAndroidExtras>
 // TODO: remove references to Game from this module.
 #include "Game.h"
 #include "LevelProgression.h"
@@ -599,6 +600,13 @@ QKeyEvent* AndroidActivity::convertAndroidKeyEvent(int action, KeyCode keyCode) 
 
     // TODO: Make this conform better by translating the text as well.
     return new QKeyEvent(translatedAction, translatedKeyCode, Qt::NoModifier);
+}
+
+void AndroidActivity::onStudentUpdateReceiver(JNIEnv* env, jobject obj, jstring availableLetters)
+{
+    QString letters(env->GetStringUTFChars(availableLetters, 0));
+    Engine* engine = Engine::getInstance();
+    engine->setValidLettersAndNumbers(letters);
 }
 
 #endif // Q_OS_ANDROID

@@ -71,6 +71,10 @@ static const JNINativeMethod JNI_METHODS[] = {
         "onKeyboardKeyEvent", "(Landroid/view/KeyEvent;)Z",
         reinterpret_cast<void*>(AndroidActivity::onKeyboardKeyEvent)
     },
+    {
+        "onStudentUpdateReceiver", "(Ljava/lang/String;)V",
+        reinterpret_cast<void*>(AndroidActivity::onStudentUpdateReceiver)
+    },
 };
 static const int sNumOfJNIMethods = sizeof(JNI_METHODS) / sizeof(JNI_METHODS[0]);
 

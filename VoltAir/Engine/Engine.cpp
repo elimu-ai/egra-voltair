@@ -125,6 +125,7 @@ void Engine::init() {
     mDestructionListener.reset(new DestructionListener());
     mDebugDraw.reset(new LiquidFunDebugDraw());
 
+    mValidLetters = "AB";
     mIsInitialized = true;
 }
 
@@ -478,4 +479,15 @@ void Engine::onQuitRequested() {
 void Engine::onOpeningCinematicCompleted(const QString& menuBGMTrack) {
     mSoundManager->setBGMTrack(SoundManager::MenuPriority, Util::getPathToSound(menuBGMTrack));
     mSoundManager->setPaused(false);
+}
+
+void Engine::setValidLettersAndNumbers(const QString &letters)
+{
+    mValidLetters = letters;
+}
+
+
+QString Engine::validLetters() const
+{
+    return mValidLetters;
 }
