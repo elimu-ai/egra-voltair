@@ -125,7 +125,9 @@ void Engine::init() {
     mDestructionListener.reset(new DestructionListener());
     mDebugDraw.reset(new LiquidFunDebugDraw());
 
-    mValidLetters = "AB";
+#ifdef Q_OS_ANDROID
+    mValidLetters = AndroidActivity::validLetters();
+#endif
     mIsInitialized = true;
 }
 
