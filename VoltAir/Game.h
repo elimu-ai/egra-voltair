@@ -163,6 +163,9 @@ public:
      */
     Q_INVOKABLE void revealAchievement(const QString& name, bool immediately = true);
 
+
+    Q_INVOKABLE QString getValidLetter(const double randomNumber);
+
     /**
      * @brief Gets the singleton Game.
      */

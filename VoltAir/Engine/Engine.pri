@@ -170,6 +170,7 @@ android {
         $$PWD/android/deploy/res/xml/voltair_tracker.xml \
         $$PWD/android/deploy/src/org/literacyapp/voltair/VoltAirActivity.java \
         $$PWD/android/deploy/src/org/literacyapp/utils/SoundManager.java \
+        $$PWD/android/deploy/src/org/literacyapp/voltair/StudentUpdateReceiver.java \
 
     LIBS += \
         $$LIQUIDFUN_DIR/Box2D/obj/local/armeabi-v7a/libliquidfun_static.a \

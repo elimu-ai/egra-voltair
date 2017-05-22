@@ -34,19 +34,22 @@ Actor {
 
     z: 4
 
-    AnimatedImageRenderer {
+    ImageRenderer {
+        function chooseLetter() {
+            return Game.getValidLetter(Math.random());// > 0.5 ? "A" : "B";
+        }
         id: graphic
 
         sizeScale: 1.25
-        rotation: Math.random() * 360.0
-        useGameTime: false
+        // rotation: Math.random() * 360.0
+        // useGameTime: false
         cacheRenderParams: true
         cullingControlsBodyActive: true
-        pauseWhenHidden: true
-        frameCount: 11
-        frameDelay: 0.05
-        currentPosition: Math.random()
-        source: Util.getPathToImage("zap/zap.png")
+        // pauseWhenHidden: true
+        // frameCount: 11
+        // frameDelay: 0.05
+        // currentPosition: Math.random()
+        source: Util.getPathToImage("letters/" + chooseLetter() + ".png")
     }
 
     CircleBody {
