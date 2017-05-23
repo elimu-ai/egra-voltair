@@ -16,6 +16,7 @@
 
 import QtQuick 2.2
 import VoltAir 1.0
+import "../ui"
 
 /**
  * @ingroup QQuickItem
@@ -34,22 +35,27 @@ Actor {
 
     z: 4
 
-    ImageRenderer {
+    AnimatedImageRenderer {
         function chooseLetter() {
             return Game.getValidLetter(Math.random());// > 0.5 ? "A" : "B";
         }
         id: graphic
 
         sizeScale: 1.25
-        // rotation: Math.random() * 360.0
-        // useGameTime: false
+        rotation: Math.random() * 360.0
+        useGameTime: false
         cacheRenderParams: true
         cullingControlsBodyActive: true
-        // pauseWhenHidden: true
-        // frameCount: 11
-        // frameDelay: 0.05
-        // currentPosition: Math.random()
-        source: Util.getPathToImage("letters/" + chooseLetter() + ".png")
+        pauseWhenHidden: true
+        frameCount: 11
+        frameDelay: 0.05
+        currentPosition: Math.random()
+        source: Util.getPathToImage("zap/zap.png") //Util.getPathToImage("letters/" + chooseLetter() + ".png")
+    }
+    VoltAirText {
+        id: letter
+        textElement.font.pixelSize: 1
+        textElement.text:  Game.getValidLetter(Math.random())
     }
 
     CircleBody {
