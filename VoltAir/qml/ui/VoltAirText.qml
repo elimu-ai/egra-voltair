@@ -36,7 +36,7 @@ Item {
 
     FontLoader {
         id: voltAirFont
-        source: Util.getPathToFont("Lilita.ttf")
+        source: Util.getPathToFont("AndikaLowerCase-Regular_5dp.ttf")
     }
 
     Text {
