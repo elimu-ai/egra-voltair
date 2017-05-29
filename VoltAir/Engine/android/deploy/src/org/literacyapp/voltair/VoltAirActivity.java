@@ -50,6 +50,7 @@ import org.qtproject.qt5.android.bindings.QtActivity;
 import java.util.ArrayList;
 import android.preference.PreferenceManager;
 import android.content.SharedPreferences;
+import java.util.Locale;
 
 
 /**
@@ -436,10 +437,13 @@ public class VoltAirActivity extends QtActivity implements InputManager.InputDev
     }
 
     public String getValidLetters() {
-        String letters = "AB";
+        String letters = "eta"; // English
+	if ("sw".equals(Locale.getDefault().getLanguage())) {
+	    letters = "aiu";
+	}
         SharedPreferences settings = getSharedPreferences(VOLTAIR_PREFS, Context.MODE_PRIVATE);
         if (settings != null) {
-            letters = settings.getString(PREF_STUDENT_LETTERS, "AB");
+            letters = settings.getString(PREF_STUDENT_LETTERS, letters);
         }
         return letters;
     }
