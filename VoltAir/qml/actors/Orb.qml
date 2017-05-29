@@ -35,10 +35,15 @@ Actor {
 
     z: 4
 
+    property string chosenLetter: "0"
+
+    function chooseLetter() {
+        if(chosenLetter === "0")
+            chosenLetter = Game.getValidLetter(Math.random());
+        return chosenLetter;
+    }
+
     AnimatedImageRenderer {
-        function chooseLetter() {
-            return Game.getValidLetter(Math.random());// > 0.5 ? "A" : "B";
-        }
         id: graphic
 
         sizeScale: 1.25
@@ -55,7 +60,7 @@ Actor {
     VoltAirText {
         id: letter
         textElement.font.pixelSize: 1
-        textElement.text:  Game.getValidLetter(Math.random())
+        textElement.text:  chooseLetter()
     }
 
     CircleBody {
@@ -133,6 +138,7 @@ Actor {
     PickupLogic {
         id: pickupLogic
         pickupSound: Util.getPathToSound("pickup.wav")
+        echoSound: Util.getPathToSound("en/letter_sound_" + chosenLetter + ".wav")
         active: false
 
         onCollected: {
