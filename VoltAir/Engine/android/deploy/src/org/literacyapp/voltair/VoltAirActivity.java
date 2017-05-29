@@ -48,6 +48,9 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.qtproject.qt5.android.bindings.QtActivity;
 
 import java.util.ArrayList;
+import android.preference.PreferenceManager;
+import android.content.SharedPreferences;
+
 
 /**
  * @brief Subclass of QtActivity to provide Android-specific functionality.
@@ -64,6 +67,7 @@ import java.util.ArrayList;
 public class VoltAirActivity extends QtActivity implements InputManager.InputDeviceListener {
     private static final String LOG_TAG = VoltAirActivity.class.getName();
     private static final String VOLTAIR_PREFS = "VoltAirPreferences";
+    public static final String PREF_STUDENT_LETTERS = "pref_student_letters";
     // Request code when invoking Activities whose result we don't care about.
     private static final int RC_UNUSED = 5001;
     private static final Charset UTF_8 = Charset.forName("UTF-8");
@@ -424,7 +428,20 @@ public class VoltAirActivity extends QtActivity implements InputManager.InputDev
         if (availableLetters != null) {
             Log.i(LOG_TAG, availableLetters);
         }
+
+        SharedPreferences settings = getSharedPreferences(VOLTAIR_PREFS, Context.MODE_PRIVATE);
+        settings.edit().putString(PREF_STUDENT_LETTERS, availableLetters).commit();
+
         onStudentUpdateReceiver(availableLetters);
+    }
+
+    public String getValidLetters() {
+        String letters = "AB";
+        SharedPreferences settings = getSharedPreferences(VOLTAIR_PREFS, Context.MODE_PRIVATE);
+        if (settings != null) {
+            letters = settings.getString(PREF_STUDENT_LETTERS, "AB");
+        }
+        return letters;
     }
 
 }

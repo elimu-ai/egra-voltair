@@ -224,7 +224,22 @@ public:
      */
     static void setBGMPaused(bool value);
 
+    /**
+     * @brief Android activity @c onStudentUpdateReceiver callback for a StudentUpdate bradcast message.
+     * The letters are stored on SharedPreferences.
+     * @param env Current JNI environment
+     * @param obj
+     * @param availableLetters String that stores the available letters for the student
+     */
     static void onStudentUpdateReceiver(JNIEnv *env, jobject obj, jstring availableLetters);
+
+    /**
+     * @brief Android activity @c validLetters returns the letters sent by the broadcast message some time ago. If
+     * no broadcast message was sent, then a default value is retrieved.
+     * If a broadcast message was received before, then the returned letters are retrieve from SharedPreferences.
+     * @return the letters
+     */
+    static QString validLetters();
 
 private:
     static bool onKeyEvent(JNIEnv* jni, jobject keyEvent, ControllerEvent* controllerEvent);

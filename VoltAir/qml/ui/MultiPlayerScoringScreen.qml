@@ -308,7 +308,7 @@ UiComponent {
         height: nextLevelButton.height
 
         enabled: nextLevelButton.enabled
-        buttonText: "Retry"
+        buttonText: TR.value("retry")
 
         focusLeft: muteButton
         focusUp: muteButton
