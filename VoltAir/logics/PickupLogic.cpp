@@ -23,6 +23,7 @@
 #include "LevelProgression.h"
 #include "PickupLogic.h"
 #include "inputs/PlayerManager.h"
+#include <QTimer>
 
 void PickupLogic::setPickupValue(int value) {
     mPickupValue = value;
@@ -38,6 +39,12 @@ void PickupLogic::setPickupSound(const QString& value) {
     mPickupSound = value;
     mPickupSoundInstance.reset(Engine::getInstance()->getSoundManager()->getSoundEffect(value));
     emit pickupSoundChanged();
+}
+
+void PickupLogic::setEchoSound(const QString& value) {
+    mEchoSound = value;
+    mEchoSoundInstance.reset(Engine::getInstance()->getSoundManager()->getSoundEffect(value));
+    emit echoSoundChanged();
 }
 
 void PickupLogic::reset() {
@@ -90,12 +97,20 @@ void PickupLogic::onPickupContacted(Body* otherBody, QPointF) {
             game->updatePlayerScore(playerId, mPickupValue);
         }
 
-        // Play the audio sound
+        // Play the audio sounds
         mPickupSoundInstance.play();
+
+        if(!mEchoSound.isEmpty()) {
+            QTimer::singleShot(200, this, SLOT(playEcho()));
+        }
 
         emit collected(otherActor);
     } else if (mAllowNonPlayerPickup && !otherBody->isSensor()) {
         mPickedUp = true;
         emit collected(otherActor);
     }
+}
+
+void PickupLogic::playEcho() {
+    mEchoSoundInstance.play();
 }

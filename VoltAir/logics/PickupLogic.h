@@ -53,6 +53,11 @@ class PickupLogic : public Logic {
     Q_PROPERTY(QString pickupSound READ getPickupSound WRITE setPickupSound
             NOTIFY pickupSoundChanged)
 
+    /**
+     * @brief Name of second sound asset to play upon collection, optional.
+     */
+    Q_PROPERTY(QString echoSound READ getEchoSound WRITE setEchoSound
+            NOTIFY echoSoundChanged)
 public:
     /**
      * @brief Returns #pickupValue.
@@ -81,6 +86,15 @@ public:
      * @param value String to set #pickupSound to
      */
     void setPickupSound(const QString& value);
+    /**
+     * @brief Returns #echoSound.
+     */
+    const QString& getEchoSound() const { return mEchoSound; }
+    /**
+     * @brief Sets #echoSound.
+     * @param value String to set #echoSound to
+     */
+    void setEchoSound(const QString& value);
 
     /**
      * @brief Makes #actor collectable again.
@@ -93,6 +107,9 @@ public:
      * @brief Checks that the PickupLogic has an #actor with a Body.
      */
     virtual void init() override;
+
+public slots:
+    void playEcho();
 
 signals:
     /**
@@ -108,6 +125,10 @@ signals:
      */
     void pickupSoundChanged();
     /**
+     * @brief Emitted when #echoSound changes.
+     */
+    void echoSoundChanged();
+    /**
      * @brief Emitted when #actor is collected.
      * @param otherActor Actor who collected #actor
      */
@@ -121,6 +142,8 @@ private:
     bool mAllowNonPlayerPickup = false;
     QString mPickupSound;
     SoundEffectInstance mPickupSoundInstance;
+    QString mEchoSound;
+    SoundEffectInstance mEchoSoundInstance;
     bool mPickedUp = false;
 };
 Q_DECLARE_METATYPE(PickupLogic*)
