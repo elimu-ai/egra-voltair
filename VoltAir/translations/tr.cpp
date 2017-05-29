@@ -1,6 +1,7 @@
 #include "tr.h"
 #include <QFile>
 #include <QTextStream>
+#include <QDebug>
 
 TR* TR::sInstance = nullptr;
 
@@ -25,6 +26,7 @@ void TR::setCurrentLanguage(QString language)
     {
         _currentLanguage = language;
         _initialized = false;
+        qDebug() << "Language changed to: " << _currentLanguage;
     }
 }
 
