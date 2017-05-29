@@ -436,10 +436,11 @@ public class VoltAirActivity extends QtActivity implements InputManager.InputDev
     }
 
     public String getValidLetters() {
-        String letters = "AB";
+        String letters = "eta";
+	// TODO: use "aiu" if Swahili system language
         SharedPreferences settings = getSharedPreferences(VOLTAIR_PREFS, Context.MODE_PRIVATE);
         if (settings != null) {
-            letters = settings.getString(PREF_STUDENT_LETTERS, "AB");
+            letters = settings.getString(PREF_STUDENT_LETTERS, letters);
         }
         return letters;
     }
