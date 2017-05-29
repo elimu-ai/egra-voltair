@@ -43,6 +43,13 @@ Actor {
         return chosenLetter;
     }
 
+    function langDir() {
+        var l = TR.getCurrentLanguage();
+        if(l === "English") return "en";
+        if(l === "Swahili") return "sw";
+        return "en";
+    }
+
     AnimatedImageRenderer {
         id: graphic
 
@@ -138,7 +145,7 @@ Actor {
     PickupLogic {
         id: pickupLogic
         pickupSound: Util.getPathToSound("pickup.wav")
-        echoSound: Util.getPathToSound("en/letter_sound_" + chosenLetter + ".wav")
+        echoSound: Util.getPathToSound(langDir() + "/letter_sound_" + chosenLetter + ".wav")
         active: false
 
         onCollected: {
