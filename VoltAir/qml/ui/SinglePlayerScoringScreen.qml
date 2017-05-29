@@ -494,7 +494,7 @@ UiComponent {
         height: 0.3 * scoreScreenCard.height
 
         enabled: nextLevelButton.enabled
-        buttonText: "Retry"
+        buttonText: TR.value("retry")
 
         focusLeft: muteButton
         focusUp: muteButton
@@ -522,7 +522,7 @@ UiComponent {
         focus: true
 
         opacity: 0
-        buttonText: root.gameCompleted ? "finish" : "next"
+        buttonText: TR.value(root.gameCompleted ? "finish" : "next")
 
         focusRight: pgsButton
         focusUp: pgsButton

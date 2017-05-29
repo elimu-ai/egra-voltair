@@ -609,4 +609,26 @@ void AndroidActivity::onStudentUpdateReceiver(JNIEnv* env, jobject obj, jstring 
     engine->setValidLettersAndNumbers(letters);
 }
 
+QString AndroidActivity::validLetters()
+{
+    auto jni = getEnv();
+    if (!jni || !getActivity()) {
+        return "";
+    }
+    jclass activityClass = getActivityClass(jni.getJNIEnv());
+
+    jmethodID getValidLettersMethod = jni->GetMethodID(activityClass, "getValidLetters",
+            "()Ljava/lang/String;");
+    jstring javaLetters = reinterpret_cast<jstring>(jni->CallObjectMethod(getActivity(),
+            getValidLettersMethod));
+    if (!javaLetters) {
+        return QString();
+    }
+    const char* nativeValidLetters = jni->GetStringUTFChars(javaLetters, nullptr);
+    QString letters = QString::fromUtf8(nativeValidLetters);
+    jni->ReleaseStringUTFChars(javaLetters, nativeValidLetters);
+    jni->DeleteLocalRef(javaLetters);
+    return letters;
+}
+
 #endif // Q_OS_ANDROID
