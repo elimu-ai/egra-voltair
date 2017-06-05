@@ -44,9 +44,9 @@ Actor {
     }
 
     function langDir() {
-        var l = TR.getCurrentLanguage();
-        if(l === "English") return "en";
-        if(l === "Swahili") return "sw";
+        var language = TR.getCurrentLanguage();
+        if (language === "Swahili")
+            return "sw";
         return "en";
     }
 
@@ -59,16 +59,24 @@ Actor {
         cacheRenderParams: true
         cullingControlsBodyActive: true
         pauseWhenHidden: true
-        frameCount: 11
+        frameCount: 1 //11
         frameDelay: 0.05
         currentPosition: Math.random()
-        source: Util.getPathToImage("zap/zap.png") //Util.getPathToImage("letters/" + chooseLetter() + ".png")
+        source: Util.getPathToImage("letters/bg.png")
     }
-    VoltAirText {
+    ImageRenderer {
         id: letter
-        textElement.font.pixelSize: 1
-        textElement.text:  chooseLetter()
+        sizeScale: 1.0
+        cacheRenderParams: true
+        cullingControlsBodyActive: true
+        source: Util.getPathToImage("letters/" + langDir() + "/" + chooseLetter() + ".png")
     }
+    // VoltAirText {
+    //     id: letter
+    //     textElement.font.pixelSize: 1
+    //     y: graphic.y - 0.2
+    //     textElement.text:  chooseLetter()
+    // }
 
     CircleBody {
         id: body
@@ -150,6 +158,7 @@ Actor {
 
         onCollected: {
             graphic.cacheRenderParams = false
+            letter.cacheRenderParams = false
             body.bodyType = Body.DynamicBody
 
             // Cache properties.

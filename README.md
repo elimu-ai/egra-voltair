@@ -1,19 +1,5 @@
-VoltAir Version [1.0]
+# VoltAir
 
-VoltAir is a full 2D game built on top of [Qt Quick] and [Liquidfun].
+Game for learning letter sounds.
 
-Please visit the [landing page] for more information about this product.
-
-Please visit the [Design] page for information about its design.
-
-Please visit the [Documentation] page for source code documentation.
-
-Please visit the [Contributing] page for information about how to contribute.
-
-  [1.0]: http://google.github.io/voltair/ReleaseNotes.html
-  [Qt Quick]: http://qt-project.org/doc/qt-5/qtquick-index.html
-  [Liquidfun]: http://google.github.io/liquidfun/
-  [landing page]: http://google.github.io/voltair/
-  [Design]: http://google.github.io/voltair/documentation
-  [Documentation]: http://google.github.io/voltair/documentation
-  [Contributing]: http://google.github.io/voltair/contributing
+![screenshot_20170605-180415](https://cloud.githubusercontent.com/assets/15718174/26791495/91e7e628-4a17-11e7-9fb7-d75464cb1f6b.png)
