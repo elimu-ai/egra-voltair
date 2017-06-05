@@ -45,7 +45,7 @@ Actor {
 
     function langDir() {
         var language = TR.getCurrentLanguage();
-        if(language === "Swahili")
+        if (language === "Swahili")
             return "sw";
         return "en";
     }
