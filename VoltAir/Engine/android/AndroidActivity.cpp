@@ -335,7 +335,7 @@ void AndroidActivity::clearBGMTrack(int priority) {
     jni->DeleteLocalRef(soundManager);
 }
 
-void AndroidActivity::setBGMTrack(int priority, const QString &track) {
+void AndroidActivity::setBGMTrack(int priority, const QString &track, int volume) {
     auto jni = getEnv();
     if (!jni || !getActivity()) {
         return;
@@ -343,10 +343,10 @@ void AndroidActivity::setBGMTrack(int priority, const QString &track) {
     jobject soundManager = getSoundManager();
     jclass soundManagerClass = getSoundManagerClass(jni.getJNIEnv(), soundManager);
     jmethodID setBGMTrackMethod = jni->GetMethodID(soundManagerClass, "setBGMTrack",
-            "(ILjava/lang/String;)V");
+            "(ILjava/lang/String;I)V");
     std::string nativeTrack = track.toStdString();
     jstring javaTrack = jni->NewStringUTF(nativeTrack.c_str());
-    jni->CallVoidMethod(soundManager, setBGMTrackMethod, priority, javaTrack);
+    jni->CallVoidMethod(soundManager, setBGMTrackMethod, priority, javaTrack, volume);
     jni->DeleteLocalRef(javaTrack);
     jni->DeleteLocalRef(soundManager);
 }

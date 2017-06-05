@@ -77,6 +77,15 @@ public:
     };
 
     /**
+     * @brief Volume levels for background music tracks.
+     *
+     * This value is used as a divisor of calculated volume value. One is 'max'; 
+     * the higher value -- the quiter sound.
+     */
+    static const int MenuVolume = 1;
+    static const int LevelVolume = 10;
+
+    /**
      * @brief Constructs a SoundManager.
      * @note It is expected that there will only ever exist one instance of SoundManager at a time.
      * @param parent Parent object
@@ -137,8 +146,9 @@ public:
      * @brief Sets the audio track of the specified background priority level.
      * @param priority Background music priority level to set the audio track for
      * @param path Audio track asset path to load for the sound effect
+     * @param volume for background music track
      */
-    Q_INVOKABLE void setBGMTrack(BGMPriority priority, const QString& path);
+    Q_INVOKABLE void setBGMTrack(BGMPriority priority, const QString& path, int volumeLevel);
 
 signals:
     /**

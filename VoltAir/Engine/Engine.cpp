@@ -227,7 +227,7 @@ void Engine::onLoadCompleted(bool success) {
 
         // If this is a timed level, set up timers and start them rolling.
         mSoundManager->setBGMTrack(SoundManager::EnvironmentalPriority,
-                Util::getPathToSound(mInFlightLevelInfo->getEnvironment()->getBGMTrack()));
+                Util::getPathToSound(mInFlightLevelInfo->getEnvironment()->getBGMTrack()), SoundManager::LevelVolume);
 
         // Mark level load complete.
         mLevelReady = true;
@@ -479,7 +479,7 @@ void Engine::onQuitRequested() {
 }
 
 void Engine::onOpeningCinematicCompleted(const QString& menuBGMTrack) {
-    mSoundManager->setBGMTrack(SoundManager::MenuPriority, Util::getPathToSound(menuBGMTrack));
+    mSoundManager->setBGMTrack(SoundManager::MenuPriority, Util::getPathToSound(menuBGMTrack), SoundManager::MenuVolume);
     mSoundManager->setPaused(false);
 }
 
