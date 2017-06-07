@@ -76,6 +76,13 @@ Actor {
         State { name: "MAGNETISM" }
     ]
 
+    function langDir() {
+        var language = TR.getCurrentLanguage();
+        if (language === "Swahili")
+            return "sw";
+        return "en";
+    }
+
     transitions: [
         Transition {
             to: "MAGNETISM"
@@ -86,7 +93,7 @@ Actor {
         Transition {
             to: "PORTAL"
             PropertyAction { target: thoughtBubble; property: "source";
-                    value: Util.getPathToImage("MoreEnergy.png") }
+                    value: Util.getPathToImage("letters/" + langDir() + "/" + Game.getValidLetter(0) + ".png") }
         }
     ]
 
@@ -109,7 +116,7 @@ Actor {
 
     ImageRenderer {
         id: thoughtBubble
-        source: Util.getPathToImage("MoreEnergy.png")
+        source: Util.getPathToImage("letters/" + langDir() + "/" + Game.getValidLetter(0) + ".png")
         sizeScale: 1.5
         x: 0.5
         y: -1.85
