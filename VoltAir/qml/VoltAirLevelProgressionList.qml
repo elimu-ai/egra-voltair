@@ -116,8 +116,8 @@ LevelProgressionList {
             ]
             screenshotFileName: "sp.jpg"
             achievementToUnlockOnPerfection: "collect_all_the_things"
-        },
-        LevelProgression {
+        }/*,
+         LevelProgression {
             name: "multiplayer"
             multiplayer: true
             environments: [
@@ -135,7 +135,7 @@ LevelProgressionList {
                 }
             ]
             screenshotFileName: "mp.jpg"
-        }
+        }*/
     ]
 }
 
