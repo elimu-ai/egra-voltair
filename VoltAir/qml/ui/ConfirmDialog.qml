@@ -28,15 +28,26 @@ UiComponent {
     /**
      * @brief Question to ask the user to confirm whether they want to perform the action or not.
      */
-    property string questionText
+    //property string questionText//
+    property string questionIcon
+
     /**
      * @brief type:string Text that indicates to the user that the action should not be performed.
      */
-    property alias cancelText: cancelButton.buttonText
+    //property alias cancelText: cancelButton.buttonText//
+    //property string cancelText//
+
+    property alias cancelUnselectedIconSource: cancelButton.unselectedIconSource
+    property alias cancelSelectedIconSource: cancelButton.selectedIconSource
+
     /**
      * @brief type:string Text that indicates to the user that the action should be performed.
      */
-    property alias confirmText: confirmButton.buttonText
+    //property alias confirmText: confirmButton.buttonText
+    //property string confirmText
+
+    property alias confirmUnselectedIconSource: confirmButton.unselectedIconSource
+    property alias confirmSelectedIconSource: confirmButton.selectedIconSource
 
     /**
      * @brief Emitted when the cancel button is activated.
@@ -91,8 +102,9 @@ UiComponent {
         id: frame
         anchors.fill: parent
 
-        VoltAirText {
-            id: question
+
+        VoltairImage {
+            id: questionImage
 
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: parent.top
@@ -101,10 +113,10 @@ UiComponent {
             width: 0.8 * parent.width
             height: 0.3 * parent.height
 
-            textElement.text: questionText
+            sourceImage: questionIcon
         }
 
-        MenuButton {
+        MenuIcon {
             id: cancelButton
 
             anchors.left: parent.left
@@ -124,7 +136,7 @@ UiComponent {
             }
         }
 
-        MenuButton {
+        MenuIcon {
             id: confirmButton
 
             anchors.right: parent.right
@@ -137,10 +149,14 @@ UiComponent {
 
             focusLeft: cancelButton
 
+            unselectedIconSource: Util.getPathToImage("UI/back.png")
+            selectedIconSource: Util.getPathToImage("UI/back_h.png")
+
             onReleased: {
                 root.confirmed()
             }
         }
+
     }
 
     onEscaped: {
