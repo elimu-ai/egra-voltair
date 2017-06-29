@@ -423,13 +423,13 @@ UiInternal {
         height: 0.6 * parent.height
         anchors.centerIn: parent
 
-        //questionText: TR.value("quit.question")
+        questionText: TR.value("quit.question")
         questionIcon: Util.getPathToImage("UI/exit.png")
-        cancelSelectedIconSource: Util.getPathToImage("UI/no.png")
-        cancelUnselectedIconSource: Util.getPathToImage("UI/no.png")
+        cancelSelectedIconSource: Util.getPathToImage("UI/play.png")
+        cancelUnselectedIconSource: Util.getPathToImage("UI/play.png")
 
-        confirmSelectedIconSource: Util.getPathToImage("UI/yes.png")
-        confirmUnselectedIconSource: Util.getPathToImage("UI/yes.png")
+        confirmSelectedIconSource: Util.getPathToImage("UI/powerOnOff.png")
+        confirmUnselectedIconSource: Util.getPathToImage("UI/powerOnOff.png")
 
         onHideCompleted: {
             if (root.state == "PAUSE_MENU") {

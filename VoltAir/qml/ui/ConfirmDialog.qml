@@ -28,7 +28,7 @@ UiComponent {
     /**
      * @brief Question to ask the user to confirm whether they want to perform the action or not.
      */
-    //property string questionText//
+    property string questionText
     property string questionIcon
 
     /**
@@ -102,9 +102,8 @@ UiComponent {
         id: frame
         anchors.fill: parent
 
-
-        VoltairImage {
-            id: questionImage
+       SimpleFrame {
+            id: frame1
 
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: parent.top
@@ -113,7 +112,33 @@ UiComponent {
             width: 0.8 * parent.width
             height: 0.3 * parent.height
 
-            sourceImage: questionIcon
+            VoltairImage {
+                id: questionImage
+
+                //anchors. .horizontalCenter: parent.left
+                anchors.top: parent.top
+                anchors.leftMargin: 0.1 * parent.width
+                anchors.topMargin: 0 /*.15 * parent.height */
+
+                width: 0.5 * parent.width
+                height: parent.height
+
+                sourceImage: questionIcon
+            }
+
+            VoltAirText {
+                id: question
+
+                anchors.horizontalCenter: parent.horizontalCenter + 0.1 * parent.width
+                anchors.top: parent.top
+                anchors.topMargin: /*0.15 * parent.height*/ 0
+
+                width: 0.8 * parent.width
+                height: /*0.3 * */parent.height
+
+                textElement.text: questionText
+            }
+
         }
 
         MenuIcon {
