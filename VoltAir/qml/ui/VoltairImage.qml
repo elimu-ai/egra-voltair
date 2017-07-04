@@ -31,6 +31,8 @@ Item {
         source: sourceImage
 
         anchors.fill: parent
+        height: 0.8 * parent.height
+
 
         verticalAlignment: Text.AlignVCenter
         horizontalAlignment: Text.AlignHCenter

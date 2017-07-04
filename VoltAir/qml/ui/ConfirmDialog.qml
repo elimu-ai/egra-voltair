@@ -112,28 +112,28 @@ UiComponent {
             width: 0.8 * parent.width
             height: 0.3 * parent.height
 
-            VoltairImage {
+            /*VoltairImage {
                 id: questionImage
 
                 //anchors. .horizontalCenter: parent.left
                 anchors.top: parent.top
                 anchors.leftMargin: 0.1 * parent.width
-                anchors.topMargin: 0 /*.15 * parent.height */
+                anchors.topMargin: 0 /*.15 * parent.height *-/
 
-                width: 0.5 * parent.width
-                height: parent.height
+                width: 0.3 * parent.width
+                height: 0.9 * parent.height
 
                 sourceImage: questionIcon
-            }
+            }*/
 
             VoltAirText {
                 id: question
 
-                anchors.horizontalCenter: parent.horizontalCenter + 0.1 * parent.width
+                anchors.horizontalCenter: parent.horizontalCenter// + 0.1 * parent.width
                 anchors.top: parent.top
                 anchors.topMargin: /*0.15 * parent.height*/ 0
 
-                width: 0.8 * parent.width
+                width: 0.6 * parent.width
                 height: /*0.3 * */parent.height
 
                 textElement.text: questionText
