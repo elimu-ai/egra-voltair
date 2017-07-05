@@ -119,7 +119,7 @@ UiComponent {
 
         // How to handle menu item selection.
         function onItemSelected(index) {
-            var menuOption = listView.model.get(index).menuOption
+            var menuOption = listView.model.get(index).name
             if (menuOption == "resume") {
                 root.resumeRequested()
             } else if (menuOption == "main.menu") {
@@ -140,18 +140,33 @@ UiComponent {
         listView.spacing: 0.0
 
         listView.model: ListModel {
-            ListElement { menuOption: "resume" }
-            ListElement { menuOption: "main.menu" }
-            ListElement { menuOption: "change.level" }
-            ListElement { menuOption: "quit" }
+            ListElement {
+                name: "resume"
+                icon : "UI/play.png"
+            }
+            ListElement {
+                name: "main.menu"
+                icon : "UI/menu.png"
+            }
+            ListElement {
+                name: "change.level"
+                icon : "UI/play.png"
+            }
+            ListElement {
+                name: "quit"
+                icon : "UI/powerOnOff.png"
+            }
         }
 
         // Template description of a menu item
-        listView.delegate: MenuButton {
+        listView.delegate: /*MenuButton*/ MenuIcon {
             height: pauseMenu.listItemHeight
             width: pauseMenu.listItemWidth
 
-            buttonText: TR.value(menuOption)
+            menuOption: TR.value(name)
+            unselectedIconSource: Util.getPathToImage(icon)
+            selectedIconSource: Util.getPathToImage(icon)
+            //buttonText: TR.value(menuOption)
 
             onPressed: {
                 pauseMenu.listView.currentIndex = index

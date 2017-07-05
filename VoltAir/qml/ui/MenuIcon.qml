@@ -24,6 +24,8 @@ import VoltAir 1.0
 KeyNavFocusArea {
     id: root
 
+    property string menuOption
+
     /**
      * @brief Source to the graphic that displays when the MenuIcon is not selected.
      */
@@ -55,6 +57,7 @@ KeyNavFocusArea {
         height: width * sourceSize.height / sourceSize.width
 
         source: root.activeFocus ? selectedIconSource : unselectedIconSource
+        fillMode: Image.PreserveAspectFit
     }
 
     MouseArea {
