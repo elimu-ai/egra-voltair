@@ -150,7 +150,7 @@ UiComponent {
             }
             ListElement {
                 name: "change.level"
-                icon : "UI/play.png"
+                icon : "UI/setLevel.png"
             }
             ListElement {
                 name: "quit"
@@ -160,7 +160,7 @@ UiComponent {
 
         // Template description of a menu item
         listView.delegate: /*MenuButton*/ MenuIcon {
-            height: pauseMenu.listItemHeight
+            height: pauseMenu.listItemHeight * .5
             width: pauseMenu.listItemWidth
 
             menuOption: TR.value(name)
