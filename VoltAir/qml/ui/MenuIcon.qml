@@ -53,8 +53,8 @@ KeyNavFocusArea {
 
         scale: bgIcon.scale
 
-        width: 0.5 * parent.width
-        height: width * sourceSize.height / sourceSize.width
+        //width: 0.5 * parent.width
+        //height: width * sourceSize.height / sourceSize.width
 
         source: root.activeFocus ? selectedIconSource : unselectedIconSource
         fillMode: Image.PreserveAspectFit

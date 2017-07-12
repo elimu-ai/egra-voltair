@@ -132,8 +132,8 @@ UiComponent {
         }
 
         anchors.fill: parent
-        listItemWidth: 0.35 * parent.width
-        listItemHeight: 0.15 * parent.height
+        listItemWidth: 0.30 * parent.width
+        listItemHeight: 0.25 * parent.height
         visibleItemCount: 4
 
         listView.orientation: ListView.Vertical
@@ -160,7 +160,7 @@ UiComponent {
 
         // Template description of a menu item
         listView.delegate: /*MenuButton*/ MenuIcon {
-            height: pauseMenu.listItemHeight * .5
+            height: pauseMenu.listItemHeight * .8
             width: pauseMenu.listItemWidth
 
             menuOption: TR.value(name)
